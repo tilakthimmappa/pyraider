@@ -1,0 +1,10 @@
+venv/
+.vscode/
+*.pyc
+utils/*.pyc
+utils/__pycache__/*.pyc
+dist/
+build/
+pyraider.egg-info/
+setup.py
+.DS_Store
