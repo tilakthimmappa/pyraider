@@ -94,7 +94,3 @@ pyraider fix
 ```
 docker build -t pyraider .
 ```
-
-### Powered by
-
-[RaiderSource](https://raidersource.com)
