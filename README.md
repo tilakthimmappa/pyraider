@@ -118,3 +118,15 @@ pyraider autofix
 ```
 docker build -t pyraider .
 ```
+
+### Contribute
+* We welcome contributions to this project in the form of:
+    * Feature Requests, Suggestions
+    * Bugs
+    * Help with writing tests
+    * Add-on features, plugins, etc
+    * Documentation
+
+### Contact us:
+* Email : raidersource@gmail.com
+* Twitter : https://twitter.com/raidersrc
