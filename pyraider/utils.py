@@ -69,13 +69,29 @@ def show_vulnerablities(data_dict):
             parent_table.append_row(["Severity", stylize(v.get('severity'), colored.fg("blue"))])
         parent_table.append_row(['CWE', v.get('cwe')])
         parent_table.append_row(['CVE', v.get('cve')])
-        parent_table.append_row(['Current version', v.get('current_version')])
+        if v.get('current_version') < v.get('update_to'):
+            parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("red"))])
+        else:
+            parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("green"))])
         if v.get('current_version') == v.get('update_to'):
             parent_table.append_row(['Update To', stylize('Package is up to date', colored.fg("green"))])
         else:
             parent_table.append_row(['Update To', stylize(v.get('update_to'), colored.fg("green"))])
         print('\n')
         print(parent_table)
+
+def show_secure_packages(data_dict):
+    """
+        Render Vulnerable data into a terminal table
+    """
+    for secure in data_dict:
+        for k, v in secure.items():
+            parent_table = BeautifulTable()
+            parent_table.append_row(['Package', k])        
+            parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("green"))])
+            parent_table.append_row(['Status',stylize('No known security vulnerabilities found', colored.fg("green"))])
+            print('\n')
+            print(parent_table)
 
 
 def render_package_update_report(data_dict):

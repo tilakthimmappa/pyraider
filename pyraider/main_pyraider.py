@@ -2,7 +2,7 @@ import json
 import pkg_resources
 from pyraider.utils import export_to_csv, export_to_json, show_vulnerablities, \
     render_package_update_report, scan_vulnerabilities, scanned_vulnerable_data, \
-    validate_version, fix, auto_fix_all
+    validate_version, fix, auto_fix_all, show_secure_packages
 
 def read_from_env():
     """
@@ -59,18 +59,26 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_p
         Read requirents from requirements.txt file and also we can generate a JSON and CSV report.
     """
     data_dict = []
+    secure_data_dict = []
     data = scan_vulnerabilities()
     if is_pipenv:
         with open(to_scan_file) as fp:
             line = json.loads(fp.read())
             for k,v in line['default'].items():
-                scanned_data = scanned_vulnerable_data(data, k.lower(), v['version'].split("==")[1])
+                req_name = k.lower()
+                req_version = v['version'].split("==")[1]
+                scanned_data = scanned_vulnerable_data(data, req_name, req_version)
                 if scanned_data:
                     show_vulnerablities(scanned_data)
                     if export_format == 'json':
                         data_dict.append(scanned_data)
                     elif export_format == 'csv':
                         data_dict.append(scanned_data)
+                else:
+                    data = {}
+                    data[req_name] = {}
+                    data[req_name]['current_version'] = req_version  
+                    secure_data_dict.append(data)
     else:
         with open(to_scan_file) as fp:
             line = fp.readline()
@@ -87,8 +95,14 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_p
                             data_dict.append(scanned_data)
                         elif export_format == 'csv':
                             data_dict.append(scanned_data)
+                    else:
+                        data = {}
+                        data[req_name] = {}
+                        data[req_name]['current_version'] = req_version  
+                        secure_data_dict.append(data)
                 line = fp.readline()
                 cnt += 1
+        show_secure_packages(secure_data_dict)
     if export_format == 'json':
         report_header = {'pyraider': '0.2'}
         data_dict.append(report_header)
