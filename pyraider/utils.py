@@ -70,7 +70,10 @@ def show_vulnerablities(data_dict):
         parent_table.append_row(['CWE', v.get('cwe')])
         parent_table.append_row(['CVE', v.get('cve')])
         parent_table.append_row(['Current version', v.get('current_version')])
-        parent_table.append_row(['Update To', stylize(v.get('update_to'), colored.fg("green"))])
+        if v.get('current_version') == v.get('update_to'):
+            parent_table.append_row(['Update To', stylize('Package is up to date', colored.fg("green"))])
+        else:
+            parent_table.append_row(['Update To', stylize(v.get('update_to'), colored.fg("green"))])
         print('\n')
         print(parent_table)
 
@@ -87,7 +90,10 @@ def render_package_update_report(data_dict):
             parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("red"))])
         else:
             parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("green"))])
-        parent_table.append_row(['Update To', stylize(v.get('update_to'), colored.fg("green"))])
+        if v.get('current_version') == v.get('update_to'):
+            parent_table.append_row(['Update To', stylize('Package is up to date', colored.fg("green"))])
+        else:
+            parent_table.append_row(['Update To', stylize(v.get('update_to'), colored.fg("green"))])
         print('\n')
         print(parent_table)
 
@@ -189,31 +195,37 @@ def query_yes_no(question, default="yes"):
             sys.stdout.write("Please respond with 'yes' or 'no' "
                              "(or 'y' or 'n').\n")
 
-def fix(data_dict, to_scan_file):
+def fix(data_dict, to_scan_file, is_pipenv=False):
     """
         Update latest version one by one
-    """
+    """    
     for k, v in data_dict.items():
         if v.get('current_version') < v.get('update_to'):
             ans = "Do you want to update {0} pacakge to {1}, It might affect other packages?".format(k, v.get('update_to'))
             answers = query_yes_no(ans)
             if answers == True:
-                installing = subprocess.call(['pip', 'install', "{0}=={1}".format(k,v.get('update_to'))])
-                print(installing)
-                print(stylize("{0} == {1} version has been installed successfully!!!".format(k,v.get('update_to')), colored.fg("green")))
-                old_pkg_name = k + '==' + v.get('current_version')
-                new_pkg_name = k +'=='+ v.get('update_to')                
-                f = open(to_scan_file,'r')
-                filedata = f.read()
-                f.close()
-                newdata = filedata.replace(old_pkg_name,new_pkg_name)
-                with open(to_scan_file, 'w') as p :
-                    p.write(newdata)
-                print(stylize("requirements.txt file has been updated successfully!!!"), colored.fg("green"))
+                if is_pipenv:
+                    installing = subprocess.call(['pipenv', 'install', "{0}=={1}".format(k,v.get('update_to'))])
+                    print(installing)
+                    print(stylize("{0} == {1} version has been installed successfully!!!".format(k,v.get('update_to')), colored.fg("green")))
+                    print(stylize("Pipfile has been updated successfully!!!"), colored.fg("green"))
+                else:
+                    installing = subprocess.call(['pip', 'install', "{0}=={1}".format(k,v.get('update_to'))])
+                    print(installing)
+                    print(stylize("{0} == {1} version has been installed successfully!!!".format(k,v.get('update_to')), colored.fg("green")))
+                    old_pkg_name = k + '==' + v.get('current_version')
+                    new_pkg_name = k +'=='+ v.get('update_to')             
+                    f = open(to_scan_file,'r')
+                    filedata = f.read()
+                    f.close()
+                    newdata = filedata.replace(old_pkg_name,new_pkg_name)
+                    with open(to_scan_file, 'w') as p :
+                        p.write(newdata)
+                    print(stylize("requirements.txt file has been updated successfully!!!"), colored.fg("green"))
         else:
             print(stylize("{0} is already up-to date to {1} version".format(k, v.get('update_to')), colored.fg("green")))
 
-def auto_fix_all(data_dict, to_scan_file):
+def auto_fix_all(data_dict, to_scan_file, is_pipenv=False):
     """
         Update all packages 
     """
@@ -223,19 +235,25 @@ def auto_fix_all(data_dict, to_scan_file):
         for vul in data_dict:
             for k, v in vul.items():
                 if v.get('current_version') < v.get('update_to'):
-                    installing = subprocess.call(['pip', 'install', "{0}=={1}".format(k,v.get('update_to'))])
-                    print(installing)
-                    print(stylize("{0} == {1} version has been installed successfully!!!".format(k), colored.fg("green")))
-                    old_pkg_name = k + '==' + v.get('current_version')
-                    new_pkg_name = k +'=='+ v.get('update_to')                
-                    f = open(to_scan_file,'r')
-                    filedata = f.read()
-                    f.close()
-                    newdata = filedata.replace(old_pkg_name,new_pkg_name)
-                    with open(to_scan_file, 'w') as p :
-                        p.write(newdata)
-                    print(stylize("requirements.txt file has been updated successfully!!!"), colored.fg("green"))
+                    if is_pipenv:
+                        installing = subprocess.call(['pipenv', 'install', "{0}=={1}".format(k,v.get('update_to'))])
+                        print(installing)
+                        print(stylize("{0} == {1} version has been installed successfully!!!".format(k,v.get('update_to')), colored.fg("green")))
+                        print(stylize("Pipfile has been updated successfully!!!"), colored.fg("green"))
+                    else:
+                        installing = subprocess.call(['pip', 'install', "{0}=={1}".format(k,v.get('update_to'))])
+                        print(installing)
+                        print(stylize("{0} == {1} version has been installed successfully!!!".format(k), colored.fg("green")))
+                        old_pkg_name = k + '==' + v.get('current_version')
+                        new_pkg_name = k +'=='+ v.get('update_to')                
+                        f = open(to_scan_file,'r')
+                        filedata = f.read()
+                        f.close()
+                        newdata = filedata.replace(old_pkg_name,new_pkg_name)
+                        with open(to_scan_file, 'w') as p :
+                            p.write(newdata)
+                        print(stylize("requirements.txt file has been updated successfully!!!"), colored.fg("green"))
                 else:
-                    print(stylize("{0} is already up-to date to {1} version".format(k, v.get('update_to')), colored.fg("green")))   
+                    print(stylize("{0} is already up to date to {1} version".format(k, v.get('update_to')), colored.fg("green")))   
 
 # End-Of-File

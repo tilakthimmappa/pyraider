@@ -38,7 +38,7 @@ logo =  """
          __/ |                              
         |___/    
  
-by RaiderSource version 0.2
+by RaiderSource version 0.4
 """
 
 
@@ -52,51 +52,81 @@ def find_file(name, path):
 
 def main():
     print(logo)
-    arguments = docopt(__doc__, version='0.1')
+    arguments = docopt(__doc__, version='0.4')
     if arguments.get('check') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
         try:
-            read_from_file(arguments.get('<filename>'))
+            filename, file_extension = os.path.splitext(arguments.get('<filename>'))
+            if file_extension == '.txt':
+                read_from_file(arguments.get('<filename>'))
+            elif file_extension == '.lock':
+                read_from_file(arguments.get('<filename>'), is_pipenv=True)
+            else:
+                read_from_file(arguments.get('<filename>'))
         except Exception as e:
             exit(1)
     if arguments.get('check') and arguments.get('<exportFileName>') and arguments.get('<format>'):
         try:
-            read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'))
+            filename, file_extension = os.path.splitext(arguments.get('<filename>'))
+            if file_extension == '.txt':
+                read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'))
+            elif file_extension == '.lock':                
+                read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'), is_pipenv=True)
+            else:                
+                read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'))
         except Exception as e:
             exit(1)
     if arguments.get('go'):
         try:
-            fileName = find_file('requirements.txt', '.')
-            if fileName:
-                read_from_file(fileName)
+            find_req_file = find_file('requirements.txt', '.')
+            find_pipenv_file = find_file('Pipfile.lock', '.')
+            if find_req_file:
+                read_from_file(find_req_file)
+            elif find_pipenv_file:
+                read_from_file(find_req_file, is_pipenv=True)
             else:
                 read_from_env()
         except Exception as e:
             exit(1)
     if arguments.get('validate'):
         try:
-            fileName = find_file('requirements.txt', '.')
+            find_req_file = find_file('requirements.txt', '.')
+            find_pipenv_file = find_file('Pipfile.lock', '.')
             if arguments.get('<filename>'):
-                check_new_version(arguments.get('<filename>'))            
-            elif fileName:
-                check_new_version(fileName)            
+                filename, file_extension = os.path.splitext(arguments.get('<filename>'))
+                if file_extension == '.txt':
+                    check_new_version(arguments.get('<filename>'))
+                elif file_extension == '.lock':
+                    check_new_version(arguments.get('<filename>'), is_pipenv=True)
+                else:
+                    check_new_version()
+            elif find_req_file:
+                check_new_version(find_req_file)
+            elif find_pipenv_file:
+                check_new_version(find_pipenv_file, is_pipenv=True)
             else:
                 check_new_version()
         except Exception as e:
             exit(1)
     if arguments.get('fix'):
         try:
-            fileName = find_file('requirements.txt', '.')
-            if fileName:
-                fix_packages(fileName)
+            find_req_file = find_file('requirements.txt', '.')
+            find_pipenv_file = find_file('Pipfile.lock', '.')
+            if find_req_file:
+                fix_packages(find_req_file)
+            elif find_pipenv_file:
+                fix_packages(find_pipenv_file, is_pipenv=True)
             else:
                 fix_packages()
         except Exception as e:
             exit(1)
     if arguments.get('autofix'):
         try:
-            fileName = find_file('requirements.txt', '.')
-            if fileName:
-                auto_fix_all_packages(fileName)
+            find_req_file = find_file('requirements.txt', '.')
+            find_pipenv_file = find_file('Pipfile.lock', '.')            
+            if find_req_file:
+                auto_fix_all_packages(find_req_file)
+            elif find_pipenv_file:
+                auto_fix_all_packages(find_pipenv_file, is_pipenv=True)
             else:
                 auto_fix_all_packages()
         except Exception as e:
