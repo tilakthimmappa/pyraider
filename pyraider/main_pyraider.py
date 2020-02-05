@@ -20,29 +20,39 @@ def read_from_env():
             show_vulnerablities(scanned_data)
 
 
-def check_new_version(to_scan_file, is_pipenv=False):
+def check_new_version(to_scan_file=None, is_pipenv=False):
     """
         Check latest version from requirements.txt file
     """
-    if is_pipenv:
-        with open(to_scan_file) as fp:
-            line = json.loads(fp.read())
-            for k,v in line['default'].items():
-                validated_data = validate_version(k.lower(), v['version'].split("==")[1])
-                render_package_update_report(validated_data)
-    else:
-        with open(to_scan_file) as fp:
-            line = fp.readline()
-            cnt = 1
-            while line:
-                req = line.strip().split('==')
-                if len(req) == 2:
-                    req_name = req[0].lower()
-                    req_version = req[1]
-                    validated_data = validate_version(req_name, req_version)
+    if to_scan_file:
+        if is_pipenv:
+            with open(to_scan_file) as fp:
+                line = json.loads(fp.read())
+                for k,v in line['default'].items():
+                    validated_data = validate_version(k.lower(), v['version'].split("==")[1])
                     render_package_update_report(validated_data)
+        else:
+            with open(to_scan_file) as fp:
                 line = fp.readline()
-                cnt += 1
+                cnt = 1
+                while line:
+                    req = line.strip().split('==')
+                    if len(req) == 2:
+                        req_name = req[0].lower()
+                        req_version = req[1]
+                        validated_data = validate_version(req_name, req_version)
+                        render_package_update_report(validated_data)
+                    line = fp.readline()
+                    cnt += 1
+    else:
+        dists = [d for d in pkg_resources.working_set]
+        for pkg in dists:
+            convert_str = str(pkg)
+            package = convert_str.split()
+            req_name = package[0].lower()
+            req_version = package[1]
+            validated_data = validate_version(req_name, req_version)
+            render_package_update_report(validated_data)
 
 def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_pipenv=False):
     """

@@ -34,10 +34,14 @@ pyraider -v
 pyraider go
 ```
 
-### If you want to scan you packages against `requirements.txt` file.
+### If you want to scan you packages against `requirements.txt` or `Pipfile.lock` file.
 
 ```commandline
-pyraider check -f requirements.txt
+pyraider check -f /Users/raider/project/requirements.txt
+```
+
+```commandline
+pyraider check -f /Users/raider/project/Pipfile.lock
 ```
 
 ### If you want to scan the packages in the same directory.
@@ -52,13 +56,21 @@ pyraider check -f .
 ### To Export as a `JSON` file.
 
 ```commandline
-pyraider check -f requirments.txt -e json result.json
+pyraider check -f /Users/raider/project/requirments.txt -e json result.json
+```
+
+```commandline
+pyraider check -f /Users/raider/project/Pipfile.lock -e json result.json
 ```
 
 ### To Export as a `CSV` file.
 
 ```commandline
-pyraider check -f requirments.txt -e csv result.csv
+pyraider check -f /Users/raider/project/requirments.txt -e csv result.csv
+```
+
+```commandline
+pyraider check -f /Users/raider/project/Pipfile.lock -e csv result.csv
 ```
 
 
@@ -66,7 +78,16 @@ pyraider check -f requirments.txt -e csv result.csv
 > Using PyRaider you can check the latest packages. Aginst installed packages.
 
 ```commandline
-pyraider validate -f requirments.txt
+pyraider validate -f /Users/raider/project/requirments.txt
+```
+
+```commandline
+pyraider validate -f /Users/raider/project/Pipfile.lock
+```
+
+* It will check out of dated packages on the actiavted virtual environment.
+```commandline
+pyraider validate 
 ```
 
 
@@ -76,15 +97,18 @@ pyraider validate -f requirments.txt
 **Note:** To updating the packages might affect your application.
 
 ### Fix
-> You can fix packages vulnerabilities individually.
+> You can fix packages vulnerabilities individually. Once it is installed it will automatically update the `requirments.txt` or `Pipfile.lock` file.
 
 ```
 pyraider fix
 ```
 
 ### Autofix
-> You can also fix packages vulnerabilities at one shot.
+> You can also fix packages vulnerabilities at one shot. Once it is installed it will automatically update the `requirments.txt` or `Pipfile.lock` file.
 
+```
+pyraider autofix
+```
 
 ## Docker container
 > You can also run `pyraider` has a docker container.
