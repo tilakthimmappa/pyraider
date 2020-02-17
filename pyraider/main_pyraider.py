@@ -2,7 +2,8 @@ import json
 import pkg_resources
 from pyraider.utils import export_to_csv, export_to_json, show_vulnerablities, \
     render_package_update_report, scan_vulnerabilities, scanned_vulnerable_data, \
-    validate_version, fix, auto_fix_all, show_secure_packages
+    validate_version, fix, auto_fix_all, show_secure_packages, get_info_from_pypi
+
 
 def read_from_env():
     """
@@ -28,8 +29,9 @@ def check_new_version(to_scan_file=None, is_pipenv=False):
         if is_pipenv:
             with open(to_scan_file) as fp:
                 line = json.loads(fp.read())
-                for k,v in line['default'].items():
-                    validated_data = validate_version(k.lower(), v['version'].split("==")[1])
+                for k, v in line['default'].items():
+                    validated_data = validate_version(
+                        k.lower(), v['version'].split("==")[1])
                     render_package_update_report(validated_data)
         else:
             with open(to_scan_file) as fp:
@@ -40,7 +42,8 @@ def check_new_version(to_scan_file=None, is_pipenv=False):
                     if len(req) == 2:
                         req_name = req[0].lower()
                         req_version = req[1]
-                        validated_data = validate_version(req_name, req_version)
+                        validated_data = validate_version(
+                            req_name, req_version)
                         render_package_update_report(validated_data)
                     line = fp.readline()
                     cnt += 1
@@ -54,6 +57,7 @@ def check_new_version(to_scan_file=None, is_pipenv=False):
             validated_data = validate_version(req_name, req_version)
             render_package_update_report(validated_data)
 
+
 def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_pipenv=False):
     """
         Read requirents from requirements.txt file and also we can generate a JSON and CSV report.
@@ -64,10 +68,11 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_p
     if is_pipenv:
         with open(to_scan_file) as fp:
             line = json.loads(fp.read())
-            for k,v in line['default'].items():
+            for k, v in line['default'].items():
                 req_name = k.lower()
                 req_version = v['version'].split("==")[1]
-                scanned_data = scanned_vulnerable_data(data, req_name, req_version)
+                scanned_data = scanned_vulnerable_data(
+                    data, req_name, req_version)
                 if scanned_data:
                     show_vulnerablities(scanned_data)
                     if export_format == 'json':
@@ -77,7 +82,7 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_p
                 else:
                     data = {}
                     data[req_name] = {}
-                    data[req_name]['current_version'] = req_version  
+                    data[req_name]['current_version'] = req_version
                     secure_data_dict.append(data)
     else:
         with open(to_scan_file) as fp:
@@ -88,7 +93,8 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_p
                 if len(req) == 2:
                     req_name = req[0].lower()
                     req_version = req[1]
-                    scanned_data = scanned_vulnerable_data(data, req_name, req_version)
+                    scanned_data = scanned_vulnerable_data(
+                        data, req_name, req_version)
                     if scanned_data:
                         show_vulnerablities(scanned_data)
                         if export_format == 'json':
@@ -98,7 +104,7 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_p
                     else:
                         data = {}
                         data[req_name] = {}
-                        data[req_name]['current_version'] = req_version  
+                        data[req_name]['current_version'] = req_version
                         secure_data_dict.append(data)
                 line = fp.readline()
                 cnt += 1
@@ -121,8 +127,9 @@ def fix_packages(to_scan_file=None, is_pipenv=False):
         if is_pipenv:
             with open(to_scan_file) as fp:
                 line = json.loads(fp.read())
-                for k,v in line['default'].items():
-                    validated_data = validate_version(k.lower(), v['version'].split("==")[1])
+                for k, v in line['default'].items():
+                    validated_data = validate_version(
+                        k.lower(), v['version'].split("==")[1])
                     fix(validated_data, to_scan_file, is_pipenv=True)
         else:
             with open(to_scan_file) as fp:
@@ -133,7 +140,8 @@ def fix_packages(to_scan_file=None, is_pipenv=False):
                     if len(req) == 2:
                         req_name = req[0].lower()
                         req_version = req[1]
-                        validated_data = validate_version(req_name, req_version)
+                        validated_data = validate_version(
+                            req_name, req_version)
                         fix(validated_data, to_scan_file)
                     line = fp.readline()
                     cnt += 1
@@ -147,6 +155,7 @@ def fix_packages(to_scan_file=None, is_pipenv=False):
             validated_data = validate_version(req_name, req_version)
             fix(validated_data, to_scan_file)
 
+
 def auto_fix_all_packages(to_scan_file=None, is_pipenv=False):
     """
         Update all packages
@@ -156,8 +165,9 @@ def auto_fix_all_packages(to_scan_file=None, is_pipenv=False):
         if is_pipenv:
             with open(to_scan_file) as fp:
                 line = json.loads(fp.read())
-                for k,v in line['default'].items():
-                    validated_data = validate_version(k.lower(), v['version'].split("==")[1])
+                for k, v in line['default'].items():
+                    validated_data = validate_version(
+                        k.lower(), v['version'].split("==")[1])
                     all_packages.append(validated_data)
             auto_fix_all(all_packages, to_scan_file, is_pipenv=True)
         else:
@@ -169,7 +179,8 @@ def auto_fix_all_packages(to_scan_file=None, is_pipenv=False):
                     if len(req) == 2:
                         req_name = req[0].lower()
                         req_version = req[1]
-                        validated_data = validate_version(req_name, req_version)
+                        validated_data = validate_version(
+                            req_name, req_version)
                         all_packages.append(validated_data)
                     line = fp.readline()
                     cnt += 1
@@ -184,7 +195,7 @@ def auto_fix_all_packages(to_scan_file=None, is_pipenv=False):
             req_version = package[1]
             validated_data = validate_version(req_name, req_version)
             all_packages.append(validated_data)
-        auto_fix_all(all_packages,to_scan_file)
+        auto_fix_all(all_packages, to_scan_file)
 
 
 # End-of-file

@@ -28,7 +28,7 @@ import os
 from pyraider.main_pyraider import read_from_file, read_from_env, check_new_version, \
     fix_packages, auto_fix_all_packages
 
-logo =  """
+logo = """
   _____       _____       _     _           
  |  __ \     |  __ \     (_)   | |          
  | |__) |   _| |__) |__ _ _  __| | ___ _ __ 
@@ -38,7 +38,7 @@ logo =  """
          __/ |                              
         |___/    
  
-by RaiderSource version 0.1.2
+by RaiderSource version 0.4.2
 """
 
 
@@ -50,12 +50,14 @@ def find_file(name, path):
         if name in files:
             return os.path.join(root, name)
 
+
 def main():
     print(logo)
-    arguments = docopt(__doc__, version='0.1.2')
+    arguments = docopt(__doc__, version='0.4.1')
     if arguments.get('check') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
         try:
-            filename, file_extension = os.path.splitext(arguments.get('<filename>'))
+            filename, file_extension = os.path.splitext(
+                arguments.get('<filename>'))
             if file_extension == '.txt':
                 read_from_file(arguments.get('<filename>'))
             elif file_extension == '.lock':
@@ -66,13 +68,17 @@ def main():
             exit(1)
     if arguments.get('check') and arguments.get('<exportFileName>') and arguments.get('<format>'):
         try:
-            filename, file_extension = os.path.splitext(arguments.get('<filename>'))
+            filename, file_extension = os.path.splitext(
+                arguments.get('<filename>'))
             if file_extension == '.txt':
-                read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'))
-            elif file_extension == '.lock':                
-                read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'), is_pipenv=True)
-            else:                
-                read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'))
+                read_from_file(arguments.get('<filename>'), arguments.get(
+                    '<format>'), arguments.get('<exportFileName>'))
+            elif file_extension == '.lock':
+                read_from_file(arguments.get('<filename>'), arguments.get(
+                    '<format>'), arguments.get('<exportFileName>'), is_pipenv=True)
+            else:
+                read_from_file(arguments.get('<filename>'), arguments.get(
+                    '<format>'), arguments.get('<exportFileName>'))
         except Exception as e:
             exit(1)
     if arguments.get('go'):
@@ -92,11 +98,13 @@ def main():
             find_req_file = find_file('requirements.txt', '.')
             find_pipenv_file = find_file('Pipfile.lock', '.')
             if arguments.get('<filename>'):
-                filename, file_extension = os.path.splitext(arguments.get('<filename>'))
+                filename, file_extension = os.path.splitext(
+                    arguments.get('<filename>'))
                 if file_extension == '.txt':
                     check_new_version(arguments.get('<filename>'))
                 elif file_extension == '.lock':
-                    check_new_version(arguments.get('<filename>'), is_pipenv=True)
+                    check_new_version(arguments.get(
+                        '<filename>'), is_pipenv=True)
                 else:
                     check_new_version()
             elif find_req_file:
@@ -122,7 +130,7 @@ def main():
     if arguments.get('autofix'):
         try:
             find_req_file = find_file('requirements.txt', '.')
-            find_pipenv_file = find_file('Pipfile.lock', '.')            
+            find_pipenv_file = find_file('Pipfile.lock', '.')
             if find_req_file:
                 auto_fix_all_packages(find_req_file)
             elif find_pipenv_file:
@@ -131,6 +139,7 @@ def main():
                 auto_fix_all_packages()
         except Exception as e:
             exit(1)
+
 
 if __name__ == "__main__":
     main()

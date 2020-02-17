@@ -14,6 +14,7 @@ except ImportError:
     from urllib.request import Request, urlopen, urlretrieve
 import ssl
 
+
 def export_to_json(data_dict, export_file_path):
     """
         Export vulnerable data into a JSON file
@@ -60,25 +61,34 @@ def show_vulnerablities(data_dict):
         parent_table = BeautifulTable()
         parent_table.append_row(['Package', k])
         if v.get('severity') == 'HIGH':
-            parent_table.append_row(["Severity", stylize(v.get('severity'), colored.fg("red"))])
+            parent_table.append_row(
+                ["Severity", stylize(v.get('severity'), colored.fg("red"))])
         elif v.get('severity') == 'MEDIUM':
-            parent_table.append_row(["Severity", stylize(v.get('severity'), colored.fg("yellow"))])
+            parent_table.append_row(["Severity", stylize(
+                v.get('severity'), colored.fg("yellow"))])
         elif v.get('severity') == 'LOW':
-            parent_table.append_row(["Severity", stylize(v.get('severity'), colored.fg("blue"))])
+            parent_table.append_row(
+                ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
         else:
-            parent_table.append_row(["Severity", stylize(v.get('severity'), colored.fg("blue"))])
+            parent_table.append_row(
+                ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
         parent_table.append_row(['CWE', v.get('cwe')])
         parent_table.append_row(['CVE', v.get('cve')])
         if v.get('current_version') < v.get('update_to'):
-            parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("red"))])
+            parent_table.append_row(['Current version', stylize(
+                v.get('current_version'), colored.fg("red"))])
         else:
-            parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("green"))])
+            parent_table.append_row(['Current version', stylize(
+                v.get('current_version'), colored.fg("green"))])
         if v.get('current_version') == v.get('update_to'):
-            parent_table.append_row(['Update To', stylize('Package is up to date', colored.fg("green"))])
+            parent_table.append_row(['Update To', stylize(
+                'Package is up to date', colored.fg("green"))])
         else:
-            parent_table.append_row(['Update To', stylize(v.get('update_to'), colored.fg("green"))])
+            parent_table.append_row(['Update To', stylize(
+                v.get('update_to'), colored.fg("green"))])
         print('\n')
         print(parent_table)
+
 
 def show_secure_packages(data_dict):
     """
@@ -87,9 +97,11 @@ def show_secure_packages(data_dict):
     for secure in data_dict:
         for k, v in secure.items():
             parent_table = BeautifulTable()
-            parent_table.append_row(['Package', k])        
-            parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("green"))])
-            parent_table.append_row(['Status',stylize('No known security vulnerabilities found', colored.fg("green"))])
+            parent_table.append_row(['Package', k])
+            parent_table.append_row(['Current version', stylize(
+                v.get('current_version'), colored.fg("green"))])
+            parent_table.append_row(['Status', stylize(
+                'No known security vulnerabilities found', colored.fg("green"))])
             print('\n')
             print(parent_table)
 
@@ -103,13 +115,17 @@ def render_package_update_report(data_dict):
         parent_table = BeautifulTable()
         parent_table.append_row(['Package', k])
         if v.get('current_version') < v.get('update_to'):
-            parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("red"))])
+            parent_table.append_row(['Current version', stylize(
+                v.get('current_version'), colored.fg("red"))])
         else:
-            parent_table.append_row(['Current version', stylize(v.get('current_version'), colored.fg("green"))])
+            parent_table.append_row(['Current version', stylize(
+                v.get('current_version'), colored.fg("green"))])
         if v.get('current_version') == v.get('update_to'):
-            parent_table.append_row(['Update To', stylize('Package is up to date', colored.fg("green"))])
+            parent_table.append_row(['Update To', stylize(
+                'Package is up to date', colored.fg("green"))])
         else:
-            parent_table.append_row(['Update To', stylize(v.get('update_to'), colored.fg("green"))])
+            parent_table.append_row(['Update To', stylize(
+                v.get('update_to'), colored.fg("green"))])
         print('\n')
         print(parent_table)
 
@@ -122,15 +138,16 @@ def get_info_from_pypi(packages):
     url = 'https://pypi.python.org/pypi/{0}/json'.format(packages)
     headers = {'Accept': 'application/json'}
     req = Request(url=url, headers=headers)
-    resp = urlopen(req)    
+    resp = urlopen(req)
     if resp.code == 200:
         info = resp.read()
-        decode_data = info.decode() 
+        decode_data = info.decode()
         info_data = json.loads(decode_data)
-        latest_version = sorted(info_data["releases"], key=parse_version)        
+        latest_version = sorted(info_data["releases"], key=parse_version)
         return latest_version[-1]
     else:
         return 'Unexpected error'
+
 
 def validate_version(packages, current_version):
     """
@@ -148,14 +165,14 @@ def scan_vulnerabilities():
     """
         Read from database
     """
-    this_dir, this_filename = os.path.split(__file__)  
+    this_dir, this_filename = os.path.split(__file__)
     data_path = os.path.join(this_dir, 'resource.pickle')
     if os.path.exists(data_path):
         data = pickle.load(open(data_path, 'rb'))
     else:
         ssl._create_default_https_context = ssl._create_unverified_context
         url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource.pickle'
-        urlretrieve(url,data_path)
+        urlretrieve(url, data_path)
         data = pickle.load(open(data_path, 'rb'))
     return data
 
@@ -167,20 +184,19 @@ def scanned_vulnerable_data(data, req_name, req_version):
     data_dict = {}
     for k, v in data.items():
         if k.lower() == req_name:
+            validated_version = get_info_from_pypi(k.lower())
             for vuls in v.get('info'):
                 if vuls.get('version'):
                     if req_version <= vuls.get('version') or vuls.get('version') <= req_version:
                         data_dict[k] = {}
                         data_dict[k]['current_version'] = req_version
-                        if v.get('update_to'):
-                            data_dict[k]['update_to'] = v.get('update_to' 'Latest Version')
-                        else:
-                            data_dict[k]['update_to'] = vuls.get('update_to', 'Latest Version')
+                        data_dict[k]['update_to'] = validated_version
                         data_dict[k]['cwe'] = vuls.get('cwe')
                         data_dict[k]['cve'] = vuls.get('cve')
                         data_dict[k]['severity'] = vuls.get('sev')
                         data_dict[k]['vul_name'] = vuls.get('vul_name')
     return data_dict
+
 
 def query_yes_no(question, default="yes"):
     """
@@ -205,41 +221,51 @@ def query_yes_no(question, default="yes"):
             if valid[choice]:
                 print("")
             else:
-                print ("")
+                print("")
             return valid[choice]
         else:
             sys.stdout.write("Please respond with 'yes' or 'no' "
                              "(or 'y' or 'n').\n")
 
+
 def fix(data_dict, to_scan_file, is_pipenv=False):
     """
         Update latest version one by one
-    """    
+    """
     for k, v in data_dict.items():
         if v.get('current_version') < v.get('update_to'):
-            ans = "Do you want to update {0} pacakge to {1}, It might affect other packages?".format(k, v.get('update_to'))
+            ans = "Do you want to update {0} pacakge to {1}, It might affect other packages?".format(
+                k, v.get('update_to'))
             answers = query_yes_no(ans)
             if answers == True:
                 if is_pipenv:
-                    installing = subprocess.call(['pipenv', 'install', "{0}=={1}".format(k,v.get('update_to'))])
+                    installing = subprocess.call(
+                        ['pipenv', 'install', "{0}=={1}".format(k, v.get('update_to'))])
                     print(installing)
-                    print(stylize("{0} == {1} version has been installed successfully!!!".format(k,v.get('update_to')), colored.fg("green")))
-                    print(stylize("Pipfile has been updated successfully!!!"), colored.fg("green"))
+                    print(stylize("{0} == {1} version has been installed successfully!!!".format(
+                        k, v.get('update_to')), colored.fg("green")))
+                    print(
+                        stylize("Pipfile has been updated successfully!!!"), colored.fg("green"))
                 else:
-                    installing = subprocess.call(['pip', 'install', "{0}=={1}".format(k,v.get('update_to'))])
+                    installing = subprocess.call(
+                        ['pip', 'install', "{0}=={1}".format(k, v.get('update_to'))])
                     print(installing)
-                    print(stylize("{0} == {1} version has been installed successfully!!!".format(k,v.get('update_to')), colored.fg("green")))
+                    print(stylize("{0} == {1} version has been installed successfully!!!".format(
+                        k, v.get('update_to')), colored.fg("green")))
                     old_pkg_name = k + '==' + v.get('current_version')
-                    new_pkg_name = k +'=='+ v.get('update_to')             
-                    f = open(to_scan_file,'r')
+                    new_pkg_name = k + '==' + v.get('update_to')
+                    f = open(to_scan_file, 'r')
                     filedata = f.read()
                     f.close()
-                    newdata = filedata.replace(old_pkg_name,new_pkg_name)
-                    with open(to_scan_file, 'w') as p :
+                    newdata = filedata.replace(old_pkg_name, new_pkg_name)
+                    with open(to_scan_file, 'w') as p:
                         p.write(newdata)
-                    print(stylize("requirements.txt file has been updated successfully!!!"), colored.fg("green"))
+                    print(stylize(
+                        "requirements.txt file has been updated successfully!!!"), colored.fg("green"))
         else:
-            print(stylize("{0} is already up-to date to {1} version".format(k, v.get('update_to')), colored.fg("green")))
+            print(stylize("{0} is already up-to date to {1} version".format(k,
+                                                                            v.get('update_to')), colored.fg("green")))
+
 
 def auto_fix_all(data_dict, to_scan_file, is_pipenv=False):
     """
@@ -252,24 +278,31 @@ def auto_fix_all(data_dict, to_scan_file, is_pipenv=False):
             for k, v in vul.items():
                 if v.get('current_version') < v.get('update_to'):
                     if is_pipenv:
-                        installing = subprocess.call(['pipenv', 'install', "{0}=={1}".format(k,v.get('update_to'))])
+                        installing = subprocess.call(
+                            ['pipenv', 'install', "{0}=={1}".format(k, v.get('update_to'))])
                         print(installing)
-                        print(stylize("{0} == {1} version has been installed successfully!!!".format(k,v.get('update_to')), colored.fg("green")))
-                        print(stylize("Pipfile has been updated successfully!!!"), colored.fg("green"))
+                        print(stylize("{0} == {1} version has been installed successfully!!!".format(
+                            k, v.get('update_to')), colored.fg("green")))
+                        print(
+                            stylize("Pipfile has been updated successfully!!!"), colored.fg("green"))
                     else:
-                        installing = subprocess.call(['pip', 'install', "{0}=={1}".format(k,v.get('update_to'))])
+                        installing = subprocess.call(
+                            ['pip', 'install', "{0}=={1}".format(k, v.get('update_to'))])
                         print(installing)
-                        print(stylize("{0} == {1} version has been installed successfully!!!".format(k), colored.fg("green")))
+                        print(stylize("{0} == {1} version has been installed successfully!!!".format(
+                            k), colored.fg("green")))
                         old_pkg_name = k + '==' + v.get('current_version')
-                        new_pkg_name = k +'=='+ v.get('update_to')                
-                        f = open(to_scan_file,'r')
+                        new_pkg_name = k + '==' + v.get('update_to')
+                        f = open(to_scan_file, 'r')
                         filedata = f.read()
                         f.close()
-                        newdata = filedata.replace(old_pkg_name,new_pkg_name)
-                        with open(to_scan_file, 'w') as p :
+                        newdata = filedata.replace(old_pkg_name, new_pkg_name)
+                        with open(to_scan_file, 'w') as p:
                             p.write(newdata)
-                        print(stylize("requirements.txt file has been updated successfully!!!"), colored.fg("green"))
+                        print(stylize(
+                            "requirements.txt file has been updated successfully!!!"), colored.fg("green"))
                 else:
-                    print(stylize("{0} is already up to date to {1} version".format(k, v.get('update_to')), colored.fg("green")))   
+                    print(stylize("{0} is already up to date to {1} version".format(
+                        k, v.get('update_to')), colored.fg("green")))
 
 # End-Of-File
