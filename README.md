@@ -1,7 +1,7 @@
 # PyRaider
 
 > Using PyRaider You can scan installed dependencies known security vulnerabilities. It uses publicly known exploits, vulnerabilities database. [Documentation](https://pyraider.raidersource.com)
-                            
+
                                     
 ## Usage
 
@@ -34,6 +34,8 @@ pyraider -v
 pyraider go
 ```
 
+**Note: If you are running this command the first time. The resource database will be downloaded. It may take some time to download. This will be downloaded only once. It won't download every time.**
+
 ### If you want to scan you packages against `requirements.txt` or `Pipfile.lock` file.
 
 ```commandline
@@ -49,6 +51,8 @@ pyraider check -f /Users/raider/project/Pipfile.lock
 ```commandline
 pyraider check -f .
 ```
+
+**Note: If you are running this command the first time. The resource database will be downloaded. It may take some time to download. This will be downloaded only once. It won't download every time.**
 
 ## Reports
 > PyRaider currently supports `JSON` and `CSV` formats.
@@ -110,6 +114,15 @@ pyraider fix
 pyraider autofix
 ```
 
+### Update latest database
+> Now you can update the resource database with latest updated vulnerabilities
+
+```
+pyraider updatedb
+```
+
+**Note: It may take some time to download.**
+
 ## Docker container
 > You can also run `pyraider` has a docker container.
 
@@ -128,5 +141,5 @@ docker build -t pyraider .
     * Documentation
 
 ### Contact us:
-* Email : raidersource@gmail.com
+* Email : tilaknayarmelpal@gmail.com
 * Twitter : https://twitter.com/ti1akt

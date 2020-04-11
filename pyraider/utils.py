@@ -2,17 +2,20 @@ from beautifultable import BeautifulTable
 import colored
 from colored import stylize
 import csv
-import subprocess
-import pickle
+import hashlib
 import json
-import sys
 import os
+import pickle
 from pkg_resources import parse_version
+import subprocess
+import sys
+import ssl
 try:
     from urllib2 import Request, urlopen
 except ImportError:
     from urllib.request import Request, urlopen, urlretrieve
-import ssl
+
+resource_file_hash = '6c01752524f79084c642e3ecc4b4fdd7'
 
 
 def export_to_json(data_dict, export_file_path):
@@ -168,13 +171,56 @@ def scan_vulnerabilities():
     this_dir, this_filename = os.path.split(__file__)
     data_path = os.path.join(this_dir, 'resource.pickle')
     if os.path.exists(data_path):
-        data = pickle.load(open(data_path, 'rb'))
+        if resource_file_hash == hashlib.md5(open(data_path, 'rb').read()).hexdigest():
+            data = pickle.load(open(data_path, 'rb'))
+            return data
+        else:
+            print(stylize(
+                'Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
+            ssl._create_default_https_context = ssl._create_unverified_context
+            url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource.pickle'
+            try:
+                urlretrieve(url, data_path)
+            except Exception as e:
+                print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
+                              colored.fg("red")))
+            data = pickle.load(open(data_path, 'rb'))
+            print(stylize('Resource has been successfully downloaded',
+                          colored.fg("green")))
+            return data
     else:
+        print(stylize('Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
         ssl._create_default_https_context = ssl._create_unverified_context
         url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource.pickle'
-        urlretrieve(url, data_path)
+        try:
+            urlretrieve(url, data_path)
+        except Exception as e:
+            print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
+                          colored.fg("red")))
         data = pickle.load(open(data_path, 'rb'))
-    return data
+        print(stylize('Resource has been successfully downloaded', colored.fg("green")))
+        return data
+
+
+def check_latestdb():
+    """
+        check and download the latest database
+    """
+    this_dir, this_filename = os.path.split(__file__)
+    data_path = os.path.join(this_dir, 'resource.pickle')
+    if resource_file_hash == hashlib.md5(open(data_path, 'rb').read()).hexdigest():
+        print(stylize('Resource database is already upto date', colored.fg("green")))
+    else:
+        print(stylize('Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
+        ssl._create_default_https_context = ssl._create_unverified_context
+        url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource.pickle'
+        try:
+            urlretrieve(url, data_path)
+        except Exception as e:
+            print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
+                          colored.fg("red")))
+        print(stylize('Resource database has been successfully updated',
+                      colored.fg("green")))
 
 
 def scanned_vulnerable_data(data, req_name, req_version):

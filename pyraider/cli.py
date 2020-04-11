@@ -7,6 +7,7 @@ Usage:
   pyraider validate -f <filename>
   pyraider fix
   pyraider autofix
+  pyraider updatedb
 
 Examples:
   pyraider go
@@ -17,6 +18,7 @@ Examples:
   pyraider validate -f requirments.txt
   pyraider fix
   pyraider autofix
+  pyraider updatedb
 
 Options:
   -h, --help
@@ -26,7 +28,7 @@ Options:
 from docopt import docopt
 import os
 from pyraider.main_pyraider import read_from_file, read_from_env, check_new_version, \
-    fix_packages, auto_fix_all_packages
+    fix_packages, auto_fix_all_packages,update_db
 
 logo = """
   _____       _____       _     _           
@@ -38,7 +40,7 @@ logo = """
          __/ |                              
         |___/    
  
-by RaiderSource version 0.4.2
+by RaiderSource version 0.4.7
 """
 
 
@@ -53,7 +55,7 @@ def find_file(name, path):
 
 def main():
     print(logo)
-    arguments = docopt(__doc__, version='0.4.1')
+    arguments = docopt(__doc__, version='0.4.7')
     if arguments.get('check') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
         try:
             filename, file_extension = os.path.splitext(
@@ -137,6 +139,11 @@ def main():
                 auto_fix_all_packages(find_pipenv_file, is_pipenv=True)
             else:
                 auto_fix_all_packages()
+        except Exception as e:
+            exit(1)
+    if arguments.get('updatedb'):
+        try:
+            update_db()
         except Exception as e:
             exit(1)
 
