@@ -40,7 +40,7 @@ logo = """
          __/ |                              
         |___/    
  
-by RaiderSource version 0.4.7
+by RaiderSource version 0.4.8
 """
 
 
@@ -85,14 +85,7 @@ def main():
             exit(1)
     if arguments.get('go'):
         try:
-            find_req_file = find_file('requirements.txt', '.')
-            find_pipenv_file = find_file('Pipfile.lock', '.')
-            if find_req_file:
-                read_from_file(find_req_file)
-            elif find_pipenv_file:
-                read_from_file(find_req_file, is_pipenv=True)
-            else:
-                read_from_env()
+            read_from_env()
         except Exception as e:
             exit(1)
     if arguments.get('validate'):

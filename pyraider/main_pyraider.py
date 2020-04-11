@@ -109,11 +109,11 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, is_p
                 cnt += 1
         show_secure_packages(secure_data_dict)
     if export_format == 'json':
-        report_header = {'pyraider': '0.4.7'}
+        report_header = {'pyraider': '0.4.8'}
         data_dict.append(report_header)
         export_to_json(data_dict, export_file_path)
     elif export_format == 'csv':
-        report_header = {'pyraider': '0.4.7'}
+        report_header = {'pyraider': '0.4.8'}
         data_dict.append(report_header)
         export_to_csv(data_dict, export_file_path)
 

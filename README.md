@@ -2,6 +2,7 @@
 
 > Using PyRaider You can scan installed dependencies known security vulnerabilities. It uses publicly known exploits, vulnerabilities database. [Documentation](https://pyraider.raidersource.com)
 
+**Latest Version: 0.4.8 **
                                     
 ## Usage
 
