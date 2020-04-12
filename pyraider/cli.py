@@ -1,24 +1,35 @@
 """
 Usage:
   pyraider go
+  pyraider go -d
   pyraider check -f <filename>
+  pyraider check -d -f <filename>
   pyraider check -f <filename> -e <format> <exportFileName>
+  pyraider check -d -f <filename> -e <format> <exportFileName>
   pyraider validate
   pyraider validate -f <filename>
   pyraider fix
   pyraider autofix
   pyraider updatedb
+  pyraider updatedb -d
 
 Examples:
   pyraider go
+  pyraider go -d
   pyraider check -f requirments.txt
+  pyraider check -d -f <filename>
   pyraider check -f requirments.txt -e json result.json
+  pyraider check -d -f requirments.txt -e json result.json
   pyraider check -f requirments.txt -e csv result.csv
+  pyraider check -d -f requirments.txt -e csv result.csv
+  pyraider check -f requirments.txt -e html result.csv
+  pyraider check -d -f requirments.txt -e html result.csv
   pyraider validate
   pyraider validate -f requirments.txt
   pyraider fix
   pyraider autofix
   pyraider updatedb
+  pyraider updatedb -d
 
 Options:
   -h, --help
@@ -28,19 +39,19 @@ Options:
 from docopt import docopt
 import os
 from pyraider.main_pyraider import read_from_file, read_from_env, check_new_version, \
-    fix_packages, auto_fix_all_packages,update_db
+    fix_packages, auto_fix_all_packages, update_db
 
 logo = """
-  _____       _____       _     _           
- |  __ \     |  __ \     (_)   | |          
- | |__) |   _| |__) |__ _ _  __| | ___ _ __ 
+  _____       _____       _     _
+ |  __ \     |  __ \     (_)   | |
+ | |__) |   _| |__) |__ _ _  __| | ___ _ __
  |  ___/ | | |  _  // _` | |/ _` |/ _ \ '__|
- | |   | |_| | | \ \ (_| | | (_| |  __/ |   
- |_|    \__, |_|  \_\__,_|_|\__,_|\___|_|   
-         __/ |                              
-        |___/    
- 
-by RaiderSource version 0.4.8
+ | |   | |_| | | \ \ (_| | | (_| |  __/ |
+ |_|    \__, |_|  \_\__,_|_|\__,_|\___|_|
+         __/ |
+        |___/
+
+by RaiderSource version 1.0.1
 """
 
 
@@ -55,8 +66,8 @@ def find_file(name, path):
 
 def main():
     print(logo)
-    arguments = docopt(__doc__, version='0.4.7')
-    if arguments.get('check') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
+    arguments = docopt(__doc__, version='1.0.1')
+    if arguments.get('check') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
         try:
             filename, file_extension = os.path.splitext(
                 arguments.get('<filename>'))
@@ -68,7 +79,20 @@ def main():
                 read_from_file(arguments.get('<filename>'))
         except Exception as e:
             exit(1)
-    if arguments.get('check') and arguments.get('<exportFileName>') and arguments.get('<format>'):
+    if arguments.get('check') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and arguments.get('-d'):
+        try:
+            filename, file_extension = os.path.splitext(
+                arguments.get('<filename>'))
+            if file_extension == '.txt':
+                read_from_file(arguments.get('<filename>'), deep_scan=True)
+            elif file_extension == '.lock':
+                read_from_file(arguments.get('<filename>'),
+                               is_pipenv=True, deep_scan=True)
+            else:
+                read_from_file(arguments.get('<filename>'), deep_scan=True)
+        except Exception as e:
+            exit(1)
+    if arguments.get('check') and arguments.get('<exportFileName>') and arguments.get('<format>') and not arguments.get('-d'):
         try:
             filename, file_extension = os.path.splitext(
                 arguments.get('<filename>'))
@@ -83,11 +107,31 @@ def main():
                     '<format>'), arguments.get('<exportFileName>'))
         except Exception as e:
             exit(1)
-    if arguments.get('go'):
+    if arguments.get('check') and arguments.get('<exportFileName>') and arguments.get('<format>') and arguments.get('-d'):
+        try:
+            filename, file_extension = os.path.splitext(
+                arguments.get('<filename>'))
+            if file_extension == '.txt':
+                read_from_file(arguments.get('<filename>'), arguments.get(
+                    '<format>'), arguments.get('<exportFileName>'), deep_scan=True)
+            elif file_extension == '.lock':
+                read_from_file(arguments.get('<filename>'), arguments.get(
+                    '<format>'), arguments.get('<exportFileName>'), is_pipenv=True, deep_scan=True)
+            else:
+                read_from_file(arguments.get('<filename>'), arguments.get(
+                    '<format>'), arguments.get('<exportFileName>'), deep_scan=True)
+        except Exception as e:
+            exit(1)
+    if arguments.get('go') and arguments.get('-d'):
+        try:
+            read_from_env(deep_scan=True)
+        except Exception as e:
+            exit(1)
+    if arguments.get('go') and not arguments.get('-d'):
         try:
             read_from_env()
         except Exception as e:
-            exit(1)
+            exit(1)   
     if arguments.get('validate'):
         try:
             find_req_file = find_file('requirements.txt', '.')
@@ -134,7 +178,12 @@ def main():
                 auto_fix_all_packages()
         except Exception as e:
             exit(1)
-    if arguments.get('updatedb'):
+    if arguments.get('updatedb') and arguments.get('-d'):
+        try:
+            update_db(deep_scan=True)
+        except Exception as e:
+            exit(1)
+    if arguments.get('updatedb') and not arguments.get('-d'):
         try:
             update_db()
         except Exception as e:

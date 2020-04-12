@@ -4,18 +4,23 @@ from colored import stylize
 import csv
 import hashlib
 import json
+from json2html import *
 import os
 import pickle
 from pkg_resources import parse_version
 import subprocess
 import sys
 import ssl
+
+lib_path = os.path.abspath(os.path.join('..'))
+sys.path.append(lib_path)
 try:
     from urllib2 import Request, urlopen
 except ImportError:
     from urllib.request import Request, urlopen, urlretrieve
 
 resource_file_hash = '6c01752524f79084c642e3ecc4b4fdd7'
+resource_light_file_hash = 'dcc71e14f99c901023920083958d4a3c'
 
 
 def export_to_json(data_dict, export_file_path):
@@ -32,6 +37,34 @@ def export_to_json(data_dict, export_file_path):
     with open(result_path, 'w') as fp:
         json.dump(data_dict, fp, indent=4)
 
+def export_to_html(data_dict, export_file_path):
+    """
+        Export vulnerable data into a JSON file
+    """
+    result_path = ''
+    if export_file_path == '.':
+        result_path = 'result.html'
+    elif export_file_path:
+        result_path = export_file_path
+    else:
+        result_path = 'result.html'
+    data = json2html.convert(json = data_dict, table_attributes="id=\"info-table\" class=\"table table-striped table-bordered table-hover\"")
+    header = """<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">PyRaider Result</h1>    
+  </div>
+</div>
+<hr>
+<br>
+</html>"""
+    with open(result_path, 'w') as fp:
+        fp.write(header) 
+        fp.write(data) 
+
 
 def export_to_csv(data_dict, export_file_path):
     """
@@ -46,14 +79,16 @@ def export_to_csv(data_dict, export_file_path):
         result_path = 'result.csv'
     with open(result_path, 'w') as f:
         writer = csv.DictWriter(f,
-                                fieldnames=['Package', 'Current Version', 'Vulnerability', 'Severity', 'CWE', 'CVE',
+                                fieldnames=['Package', 'Current Version', 'Description', 'Severity', 'CWE', 'CVE',
                                             'Update Version'])
         writer.writeheader()
-        for k, v in data_dict.items():
-            writer.writerow(
-                {"Package": k, "Current Version": v.get('current_version'), "Vulnerability": v.get('vul_name'),
-                 'Severity': v.get('severity'), 'CWE': v.get('cwe'),
-                 'CVE': v.get('cve'), 'Update Version': v.get('update_to')})
+        for k,v in data_dict.items():
+            for data in v:
+                for k, v in data.items():
+                    writer.writerow(
+                        {"Package": k, "Current Version": v.get('current_version'), "Description": v.get('decription'),
+                        'Severity': v.get('severity'), 'CWE': v.get('cwe'),
+                        'CVE': v.get('cve'), 'Update Version': v.get('update_to')})
 
 
 def show_vulnerablities(data_dict):
@@ -76,7 +111,7 @@ def show_vulnerablities(data_dict):
             parent_table.append_row(
                 ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
         parent_table.append_row(['CWE', v.get('cwe')])
-        parent_table.append_row(['CVE', v.get('cve')])
+        parent_table.append_row(['CVE', v.get('cve')])        
         if v.get('current_version') < v.get('update_to'):
             parent_table.append_row(['Current version', stylize(
                 v.get('current_version'), colored.fg("red"))])
@@ -89,6 +124,8 @@ def show_vulnerablities(data_dict):
         else:
             parent_table.append_row(['Update To', stylize(
                 v.get('update_to'), colored.fg("green"))])
+        parent_table.append_row(['Description', v.get('description')])
+        parent_table.append_row(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
         print('\n')
         print(parent_table)
 
@@ -201,26 +238,79 @@ def scan_vulnerabilities():
         print(stylize('Resource has been successfully downloaded', colored.fg("green")))
         return data
 
-
-def check_latestdb():
+def scan_light_vulnerabilities():
     """
-        check and download the latest database
+        Read from database
     """
     this_dir, this_filename = os.path.split(__file__)
-    data_path = os.path.join(this_dir, 'resource.pickle')
-    if resource_file_hash == hashlib.md5(open(data_path, 'rb').read()).hexdigest():
-        print(stylize('Resource database is already upto date', colored.fg("green")))
+    data_path = os.path.join(this_dir, 'resource_light.pickle')
+    if os.path.exists(data_path):
+        if resource_light_file_hash == hashlib.md5(open(data_path, 'rb').read()).hexdigest():
+            data = pickle.load(open(data_path, 'rb'))
+            return data
+        else:
+            print(stylize(
+                'Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
+            ssl._create_default_https_context = ssl._create_unverified_context
+            url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource_light.pickle'
+            try:
+                urlretrieve(url, data_path)
+            except Exception as e:
+                print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
+                              colored.fg("red")))
+            data = pickle.load(open(data_path, 'rb'))
+            print(stylize('Resource has been successfully downloaded',
+                          colored.fg("green")))
+            return data
     else:
         print(stylize('Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
         ssl._create_default_https_context = ssl._create_unverified_context
-        url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource.pickle'
+        url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource_light.pickle'
         try:
             urlretrieve(url, data_path)
         except Exception as e:
             print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
                           colored.fg("red")))
-        print(stylize('Resource database has been successfully updated',
-                      colored.fg("green")))
+        data = pickle.load(open(data_path, 'rb'))
+        print(stylize('Resource has been successfully downloaded', colored.fg("green")))
+        return data
+
+
+def check_latestdb(deep_scan=False):
+    """
+        check and download the latest database
+    """
+    this_dir, this_filename = os.path.split(__file__)
+    if deep_scan:
+        data_path = os.path.join(this_dir, 'resource.pickle')
+        if resource_file_hash == hashlib.md5(open(data_path, 'rb').read()).hexdigest():
+            print(stylize('Resource database is already upto date', colored.fg("green")))
+        else:
+            print(stylize('Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
+            ssl._create_default_https_context = ssl._create_unverified_context
+            url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource.pickle'
+            try:
+                urlretrieve(url, data_path)
+            except Exception as e:
+                print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
+                            colored.fg("red")))
+            print(stylize('Resource database has been successfully updated',
+                        colored.fg("green")))
+    else:
+        data_path = os.path.join(this_dir, 'resource_light.pickle')
+        if resource_light_file_hash == hashlib.md5(open(data_path, 'rb').read()).hexdigest():
+            print(stylize('Resource database is already upto date', colored.fg("green")))
+        else:
+            print(stylize('Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
+            ssl._create_default_https_context = ssl._create_unverified_context
+            url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource_light.pickle'
+            try:
+                urlretrieve(url, data_path)
+            except Exception as e:
+                print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
+                            colored.fg("red")))
+            print(stylize('Resource database has been successfully updated',
+                        colored.fg("green")))
 
 
 def scanned_vulnerable_data(data, req_name, req_version):
@@ -240,7 +330,8 @@ def scanned_vulnerable_data(data, req_name, req_version):
                         data_dict[k]['cwe'] = vuls.get('cwe')
                         data_dict[k]['cve'] = vuls.get('cve')
                         data_dict[k]['severity'] = vuls.get('sev')
-                        data_dict[k]['vul_name'] = vuls.get('vul_name')
+                        if vuls.get('description'):
+                            data_dict[k]['description'] = vuls.get('description')
     return data_dict
 
 
