@@ -5,6 +5,7 @@
 **Latest Version: 1.0.1**
 
 ![pyraider](img/pyraider_scan.png)
+
                                     
 ## Usage
 
@@ -84,7 +85,7 @@ pyraider check -f .
 **Note: If you are running this command the first time. The resource database will be downloaded. It may take some time to download. This will be downloaded only once. It won't download every time.**
 
 ## Reports
-> PyRaider currently supports `JSON` and `CSV` formats.
+> PyRaider currently supports `JSON`, `HTML` and `CSV` formats.
 
 ### To Export as a `JSON` file.
 
@@ -117,6 +118,7 @@ pyraider check -f /Users/raider/project/requirments.txt -e html result.html
 pyraider check -f /Users/raider/project/Pipfile.lock -e html result.html
 ```
 
+![pyraider HTML Report](img/pyraider_html_report.png)
 
 ## Out of Date Pacakges
 > Using PyRaider you can check the latest packages. Aginst installed packages.
