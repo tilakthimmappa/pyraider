@@ -118,7 +118,6 @@ pyraider check -f /Users/raider/project/requirments.txt -e html result.html
 pyraider check -f /Users/raider/project/Pipfile.lock -e html result.html
 ```
 
-![pyraider HTML Report](img/pyraider_html_report.png)
 
 ## Out of Date Pacakges
 > Using PyRaider you can check the latest packages. Aginst installed packages.
