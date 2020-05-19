@@ -1,13 +1,8 @@
 """
 Usage:
-  pyraider go
-  pyraider go -d
-  pyraider check -f <filename>
-  pyraider check -d -f <filename>
-  pyraider check -f <filename> -e <format> <exportFileName>
-  pyraider check -d -f <filename> -e <format> <exportFileName>
-  pyraider validate
-  pyraider validate -f <filename>
+  pyraider go [-d | -s [high|medium|low]]
+  pyraider check -f <filename> [-d | -e <format> | <exportFileName> | -e <format>  <exportFileName> | -s [high|medium|low] | -e <format> -s [high|medium|low] |  -e <format>  <exportFileName> -s [high|medium|low]]
+  pyraider validate [-p <package> | -f <filename>]
   pyraider fix
   pyraider autofix
   pyraider updatedb
@@ -15,7 +10,6 @@ Usage:
 
 Examples:
   pyraider go
-  pyraider go -d
   pyraider check -f requirments.txt
   pyraider check -d -f <filename>
   pyraider check -f requirments.txt -e json result.json
@@ -25,6 +19,7 @@ Examples:
   pyraider check -f requirments.txt -e html result.csv
   pyraider check -d -f requirments.txt -e html result.csv
   pyraider validate
+  pyraider validate -p django==1.11.13
   pyraider validate -f requirments.txt
   pyraider fix
   pyraider autofix
@@ -35,7 +30,6 @@ Options:
   -h, --help
   -v, --version
 """
-
 from docopt import docopt
 import os
 from pyraider.main_pyraider import read_from_file, read_from_env, check_new_version, \
@@ -67,89 +61,124 @@ def find_file(name, path):
 def main():
     print(logo)
     arguments = docopt(__doc__, version='1.0.1')
-    if arguments.get('check') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
-        try:
-            filename, file_extension = os.path.splitext(
-                arguments.get('<filename>'))
-            if file_extension == '.txt':
-                read_from_file(arguments.get('<filename>'))
-            elif file_extension == '.lock':
-                read_from_file(arguments.get('<filename>'), is_pipenv=True)
-            else:
-                read_from_file(arguments.get('<filename>'))
-        except Exception as e:
-            exit(1)
-    if arguments.get('check') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and arguments.get('-d'):
-        try:
-            filename, file_extension = os.path.splitext(
-                arguments.get('<filename>'))
-            if file_extension == '.txt':
-                read_from_file(arguments.get('<filename>'), deep_scan=True)
-            elif file_extension == '.lock':
-                read_from_file(arguments.get('<filename>'),
-                               is_pipenv=True, deep_scan=True)
-            else:
-                read_from_file(arguments.get('<filename>'), deep_scan=True)
-        except Exception as e:
-            exit(1)
-    if arguments.get('check') and arguments.get('<exportFileName>') and arguments.get('<format>') and not arguments.get('-d'):
-        try:
-            filename, file_extension = os.path.splitext(
-                arguments.get('<filename>'))
-            if file_extension == '.txt':
-                read_from_file(arguments.get('<filename>'), arguments.get(
-                    '<format>'), arguments.get('<exportFileName>'))
-            elif file_extension == '.lock':
-                read_from_file(arguments.get('<filename>'), arguments.get(
-                    '<format>'), arguments.get('<exportFileName>'), is_pipenv=True)
-            else:
-                read_from_file(arguments.get('<filename>'), arguments.get(
-                    '<format>'), arguments.get('<exportFileName>'))
-        except Exception as e:
-            exit(1)
-    if arguments.get('check') and arguments.get('<exportFileName>') and arguments.get('<format>') and arguments.get('-d'):
-        try:
-            filename, file_extension = os.path.splitext(
-                arguments.get('<filename>'))
-            if file_extension == '.txt':
-                read_from_file(arguments.get('<filename>'), arguments.get(
-                    '<format>'), arguments.get('<exportFileName>'), deep_scan=True)
-            elif file_extension == '.lock':
-                read_from_file(arguments.get('<filename>'), arguments.get(
-                    '<format>'), arguments.get('<exportFileName>'), is_pipenv=True, deep_scan=True)
-            else:
-                read_from_file(arguments.get('<filename>'), arguments.get(
-                    '<format>'), arguments.get('<exportFileName>'), deep_scan=True)
-        except Exception as e:
-            exit(1)
-    if arguments.get('go') and arguments.get('-d'):
-        try:
-            read_from_env(deep_scan=True)
-        except Exception as e:
-            exit(1)
-    if arguments.get('go') and not arguments.get('-d'):
-        try:
-            read_from_env()
-        except Exception as e:
-            exit(1)   
+    print("arguments", arguments)
+    if arguments.get('check'):
+        if arguments.get('high'):
+            if arguments.get('<filename>') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'),sev='HIGH')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('-d') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
+                try:
+                    read_from_file(arguments.get('<filename>'), deep_scan=True, sev='HIGH')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('<format>') and not arguments.get('<exportFileName>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'), arguments.get('<format>'), ".", sev='HIGH')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('<format>') and arguments.get('<exportFileName>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'),sev='HIGH')
+                except Exception as e:
+                    exit(1)
+        elif arguments.get('medium'):
+            if arguments.get('<filename>') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'),sev='MEDIUM')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('-d') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
+                try:
+                    read_from_file(arguments.get('<filename>'), deep_scan=True, sev='MEDIUM')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('<format>') and not arguments.get('<exportFileName>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'), arguments.get('<format>'), ".", sev='MEDIUM')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<format>') and arguments.get('<filename>') and arguments.get('<exportFileName>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'),sev='MEDIUM')
+                except Exception as e:
+                    exit(1)
+        elif arguments.get('low'):
+            if arguments.get('<filename>') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'),sev='LOW')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('-d') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
+                try:
+                    read_from_file(arguments.get('<filename>'), deep_scan=True, sev='LOW')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('<format>') and not arguments.get('<exportFileName>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'), arguments.get('<format>'), ".", sev='LOW')
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<format>') and arguments.get('<filename>') and arguments.get('<exportFileName>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'),sev='LOW')
+                except Exception as e:
+                    exit(1)
+        else:
+            if arguments.get('<filename>') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'))
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('-d') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
+                try:
+                    read_from_file(arguments.get('<filename>'), deep_scan=True)
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>') and arguments.get('<format>') and not arguments.get('<exportFileName>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'), arguments.get('<format>'), ".")
+                except Exception as e:
+                    exit(1)
+            elif arguments.get('<filename>')  and arguments.get('<format>') and arguments.get('<filename>') and arguments.get('<exportFileName>') and not arguments.get('-d'):
+                try:
+                    read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'))
+                except Exception as e:
+                    exit(1)
+    if arguments.get('go'):
+        if arguments.get('-d'):
+            try:
+                read_from_env(deep_scan=True)
+            except Exception as e:
+                exit(1)
+        elif arguments.get('high'):
+            try:
+                read_from_env(sev='HIGH')
+            except Exception as e:
+                exit(1)
+        elif arguments.get('medium'):
+            try:
+                read_from_env(sev='MEDIUM')
+            except Exception as e:
+                exit(1)
+        elif arguments.get('low'):
+            try:
+                read_from_env(sev='LOW')
+            except Exception as e:
+                exit(1)
+        else:
+            try:
+                read_from_env()
+            except Exception as e:
+                exit(1)
     if arguments.get('validate'):
         try:
-            find_req_file = find_file('requirements.txt', '.')
-            find_pipenv_file = find_file('Pipfile.lock', '.')
-            if arguments.get('<filename>'):
-                filename, file_extension = os.path.splitext(
-                    arguments.get('<filename>'))
-                if file_extension == '.txt':
-                    check_new_version(arguments.get('<filename>'))
-                elif file_extension == '.lock':
-                    check_new_version(arguments.get(
-                        '<filename>'), is_pipenv=True)
-                else:
-                    check_new_version()
-            elif find_req_file:
-                check_new_version(find_req_file)
-            elif find_pipenv_file:
-                check_new_version(find_pipenv_file, is_pipenv=True)
+            if arguments.get('<package>'):
+                check_new_version(arguments.get('<package>'), vpackage=True)
+            elif arguments.get('<filename>'):
+                check_new_version(arguments.get('<filename>'))
             else:
                 check_new_version()
         except Exception as e:

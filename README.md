@@ -3,7 +3,7 @@
 > Using PyRaider You can scan installed dependencies known security vulnerabilities. It uses publicly known exploits, vulnerabilities database. [Documentation](https://pyraider.raidersource.com)
 
 **Latest Version: 1.0.1**
-
+**Note: Currently pyraider support above `python3` version.**
 ![pyraider](img/pyraider_scan.png)
 
                                     
@@ -11,21 +11,19 @@
 
 [Documentation](https://pyraider.raidersource.com/#/)
 
-**Note:** Currently pyraider support above `python3` version .
-
 ### Install `pyraider` using pip
 
 ```commandline
 pip install pyraider
 ```
 
-### Once a `pyraider` you can run help command. It will show you the list commands and examples.
+### To check the list of options available.
 
 ```commandline
 pyraider -h
 ```
 
-### You can use `pyraider -v` to check the version.
+### `pyraider -v` to check the version.
 
 ```commandline
 pyraider -v
@@ -41,7 +39,8 @@ pyraider -v
 ##  Scan Vulnerabilities against the dependencies
 > Using PyRaider you can scan the vulnerable packages.
 
-### To run basic scan you can use `pyraider go` command. It will automatically detects the installed packages and scans against it and shows the report.
+### To run basic scan you can use `pyraider go` command. 
+>It will automatically detects the installed packages and scans against it and shows the report.
 
 ```commandline
 pyraider go
@@ -120,7 +119,7 @@ pyraider check -f /Users/raider/project/Pipfile.lock -e html result.html
 
 
 ## Out of Date Pacakges
-> Using PyRaider you can check the latest packages. Aginst installed packages.
+> Using PyRaider you can check the latest packages. Against installed packages.
 
 ```commandline
 pyraider validate -f /Users/raider/project/requirments.txt
