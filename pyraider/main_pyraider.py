@@ -92,7 +92,7 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, deep
     data_dict = {}
     secure_data_dict = []
     data_dict['pyraider'] = []
-    data_dict['version'] = '1.0.1'
+    data_dict['version'] = '1.0.2'
     vul_package_count = 0
     filename, file_extension = os.path.splitext(to_scan_file)
     if deep_scan:

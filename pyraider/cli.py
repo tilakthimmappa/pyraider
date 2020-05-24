@@ -5,8 +5,7 @@ Usage:
   pyraider validate [-p <package> | -f <filename>]
   pyraider fix
   pyraider autofix
-  pyraider updatedb
-  pyraider updatedb -d
+  pyraider updatedb [-d]
 
 Examples:
   pyraider go
@@ -45,7 +44,7 @@ logo = """
          __/ |
         |___/
 
-by RaiderSource version 1.0.1
+by RaiderSource version 1.0.2
 """
 
 
@@ -60,8 +59,7 @@ def find_file(name, path):
 
 def main():
     print(logo)
-    arguments = docopt(__doc__, version='1.0.1')
-    print("arguments", arguments)
+    arguments = docopt(__doc__, version='1.0.2')
     if arguments.get('check'):
         if arguments.get('high'):
             if arguments.get('<filename>') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
@@ -207,16 +205,17 @@ def main():
                 auto_fix_all_packages()
         except Exception as e:
             exit(1)
-    if arguments.get('updatedb') and arguments.get('-d'):
-        try:
-            update_db(deep_scan=True)
-        except Exception as e:
-            exit(1)
-    if arguments.get('updatedb') and not arguments.get('-d'):
-        try:
-            update_db()
-        except Exception as e:
-            exit(1)
+    if arguments.get('updatedb'):
+        if arguments.get('-d'):
+            try:
+                update_db(deep_scan=True)
+            except Exception as e:
+                exit(1)
+        else:
+            try:
+                update_db()
+            except Exception as e:
+                exit(1)
 
 
 if __name__ == "__main__":
