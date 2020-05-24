@@ -2,59 +2,50 @@
 
 > Using PyRaider You can scan installed dependencies known security vulnerabilities. It uses publicly known exploits, vulnerabilities database. [Documentation](https://pyraider.raidersource.com)
 
-**Latest Version: 1.0.1**
+**Latest Version: 1.0.2**
+
+**Note: Currently pyraider support above `python3` version.**
 
 ![pyraider](img/pyraider_scan.png)
 
                                     
 ## Usage
 
+# Table of Contents
+1. [Installation](https://pyraider.raidersource.com/#/Installation)
+2. [Scan Pakage](https://pyraider.raidersource.com/Scan?id=scan-python-packages)
+2. [Scan Package by Severity](https://pyraider.raidersource.com/Scan?id=scan-packages-by-severity)
+3. [Report](https://pyraider.raidersource.com/#/Report)
+3. [CI/CD](https://pyraider.raidersource.com/#/CICD)
+4. [Outdated package check](https://pyraider.raidersource.com/#/Validate)
+
 [Documentation](https://pyraider.raidersource.com/#/)
 
-**Note:** Currently pyraider support above `python3` version .
-
-### Install `pyraider` using pip
+### Install `pyraider` using `pip` or `pyenv`
 
 ```commandline
 pip install pyraider
 ```
 
-### Once a `pyraider` you can run help command. It will show you the list commands and examples.
+```commandline
+pyenv install pyraider
+```
+
+### To check the list of options available.
 
 ```commandline
 pyraider -h
 ```
 
-### You can use `pyraider -v` to check the version.
-
-```commandline
-pyraider -v
-```
-* Now `PyRaider` supports two types of scans.
-    * Light scan
-        * It is faster and it checks against only the latest CVE database vulnerabilities.
-        * Default it will use `Light Scan`.
-    * Deep Scan
-        * This may take some time to download the first time. It will scan against all the CVE database vulnerabilities.
-        * If you want to use `Deep Scan` need to add `-d` command. It will automatically scans against all the CVE database vulnerabilities.
-
 ##  Scan Vulnerabilities against the dependencies
 > Using PyRaider you can scan the vulnerable packages.
 
-### To run basic scan you can use `pyraider go` command. It will automatically detects the installed packages and scans against it and shows the report.
+### To run basic scan you can use `pyraider go` command. 
+>It will automatically detects the installed packages and scans against it and shows the report.
 
 ```commandline
 pyraider go
 ```
-
-* To Run Deep Sca
-
-```commandline
-pyraider go -d
-```
-
-**Note: If you are running this command the first time. The resource database will be downloaded. It may take some time to download. This will be downloaded only once. It won't download every time.**
-
 
 ### If you want to scan you packages against `requirements.txt` or `Pipfile.lock` file.
 
@@ -65,24 +56,6 @@ pyraider check -f /Users/raider/project/requirements.txt
 ```commandline
 pyraider check -f /Users/raider/project/Pipfile.lock
 ```
-
-* To Run Deep Scan
-
-```commandline
-pyraider check -d -f /Users/raider/project/requirements.txt
-```
-
-```commandline
-pyraider check -d -f /Users/raider/project/Pipfile.lock
-```
-
-### If you want to scan the packages in the same directory.
-
-```commandline
-pyraider check -f .
-```
-
-**Note: If you are running this command the first time. The resource database will be downloaded. It may take some time to download. This will be downloaded only once. It won't download every time.**
 
 ## Reports
 > PyRaider currently supports `JSON`, `HTML` and `CSV` formats.
@@ -120,7 +93,7 @@ pyraider check -f /Users/raider/project/Pipfile.lock -e html result.html
 
 
 ## Out of Date Pacakges
-> Using PyRaider you can check the latest packages. Aginst installed packages.
+> Using PyRaider you can check the latest packages. Against installed packages.
 
 ```commandline
 pyraider validate -f /Users/raider/project/requirments.txt
@@ -132,7 +105,7 @@ pyraider validate -f /Users/raider/project/Pipfile.lock
 
 * It will check out of dated packages on the actiavted virtual environment.
 ```commandline
-pyraider validate 
+pyraider validate -p django==1.11.13
 ```
 
 
@@ -161,13 +134,6 @@ pyraider autofix
 ```
 pyraider updatedb
 ```
-* To Update `Deep Scan` database  
-
-```
-pyraider updatedb -d
-```
-
-**Note: It may take some time to download.**
 
 ## Docker container
 > You can also run `pyraider` has a docker container.
