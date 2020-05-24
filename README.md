@@ -13,8 +13,8 @@
 
 # Table of Contents
 1. [Installation](https://pyraider.raidersource.com/#/Installation)
-2. [Scan Pakage](https://pyraider.raidersource.com/Scan?id=scan-python-packages)
-2. [Scan Package by Severity](https://pyraider.raidersource.com/Scan?id=scan-packages-by-severity)
+2. [Scan Pakage](https://pyraider.raidersource.com/#/Scan?id=scan-python-packages)
+2. [Scan Package by Severity](https://pyraider.raidersource.com/#/Scan?id=scan-packages-by-severity)
 3. [Report](https://pyraider.raidersource.com/#/Report)
 3. [CI/CD](https://pyraider.raidersource.com/#/CICD)
 4. [Outdated package check](https://pyraider.raidersource.com/#/Validate)
