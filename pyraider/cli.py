@@ -29,6 +29,7 @@ Options:
   -h, --help
   -v, --version
 """
+
 from docopt import docopt
 import os
 from pyraider.main_pyraider import read_from_file, read_from_env, check_new_version, \
