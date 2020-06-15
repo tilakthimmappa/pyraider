@@ -1,27 +1,27 @@
 """
 Usage:
-  pyraider go [-d | -s [high|medium|low]]
+  pyraider go [-d | -s [high|medium|low] | -e <format> | -e <format>  <exportFileName> | -e <format> -s [high|medium|low] | -e <format>  <exportFileName> -s [high|medium|low] | -d -s [high|medium|low] | -d -e <format> | -d -e <format>  <exportFileName> | -d -e <format> -s [high|medium|low] | -d -e <format> <exportFileName> -s [high|medium|low]]
   pyraider check -f <filename> [-d | -e <format> | <exportFileName> | -e <format>  <exportFileName> | -s [high|medium|low] | -e <format> -s [high|medium|low] |  -e <format>  <exportFileName> -s [high|medium|low]]
   pyraider validate [-p <package> | -f <filename>]
-  pyraider fix
-  pyraider autofix
+  pyraider fix [-d | -s [high|medium|low] | -d -s [high|medium|low]]
+  pyraider autofix [-d | -s [high|medium|low] | -d -s [high|medium|low]]
   pyraider updatedb [-d]
 
 Examples:
   pyraider go
+  pyraider go -s high
+  pyraider go -e json
+  pyraider go -e json -s high
   pyraider check -f requirments.txt
-  pyraider check -d -f <filename>
   pyraider check -f requirments.txt -e json result.json
-  pyraider check -d -f requirments.txt -e json result.json
-  pyraider check -f requirments.txt -e csv result.csv
-  pyraider check -d -f requirments.txt -e csv result.csv
-  pyraider check -f requirments.txt -e html result.csv
-  pyraider check -d -f requirments.txt -e html result.csv
+  pyraider check -f requirments.txt -e json result.json -s high
   pyraider validate
   pyraider validate -p django==1.11.13
   pyraider validate -f requirments.txt
   pyraider fix
+  pyraider fix -s high
   pyraider autofix
+  pyraider autofix -s high
   pyraider updatedb
   pyraider updatedb -d
 
@@ -45,7 +45,7 @@ logo = """
          __/ |
         |___/
 
-by RaiderSource version 1.0.2
+by RaiderSource version 1.0.3
 """
 
 
@@ -60,7 +60,7 @@ def find_file(name, path):
 
 def main():
     print(logo)
-    arguments = docopt(__doc__, version='1.0.2')
+    arguments = docopt(__doc__, version='1.0.3')
     if arguments.get('check'):
         if arguments.get('high'):
             if arguments.get('<filename>') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
@@ -146,27 +146,107 @@ def main():
                     read_from_file(arguments.get('<filename>'), arguments.get('<format>'), arguments.get('<exportFileName>'))
                 except Exception as e:
                     exit(1)
-    if arguments.get('go'):
-        if arguments.get('-d'):
+    if arguments.get('go'):  
+        if arguments.get('-d') and arguments.get('<format>') and arguments.get('<exportFileName>') and arguments.get('high'):
+            try:
+                read_from_env(arguments.get('<format>'),arguments.get('<exportFileName>'), deep_scan=True, sev='HIGH')
+            except Exception as e:
+                exit(1)
+        if arguments.get('-d') and arguments.get('<format>') and not arguments.get('<exportFileName>') and arguments.get('high'):
+            try:
+                read_from_env(arguments.get('<format>'), deep_scan=True, sev='HIGH')
+            except Exception as e:
+                exit(1)
+        elif arguments.get('-d') and arguments.get('<format>') and arguments.get('<exportFileName>') and arguments.get('medium'):
+            try:
+                read_from_env(arguments.get('<format>'),arguments.get('<exportFileName>'), deep_scan=True, sev='MEDIUM')
+            except Exception as e:
+                exit(1)
+        elif arguments.get('-d') and arguments.get('<format>') and not arguments.get('<exportFileName>') and arguments.get('medium'):
+            try:
+                read_from_env(arguments.get('<format>'), deep_scan=True, sev='MEDIUM')
+            except Exception as e:
+                exit(1)
+        elif arguments.get('-d') and arguments.get('<format>') and arguments.get('<exportFileName>') and arguments.get('low'):
+            try:
+                read_from_env(arguments.get('<format>'),arguments.get('<exportFileName>'), deep_scan=True, sev='LOW')
+            except Exception as e:
+                exit(1)  
+        elif arguments.get('-d') and arguments.get('<format>') and not arguments.get('<exportFileName>') and arguments.get('low'):
+            try:
+                read_from_env(arguments.get('<format>'), deep_scan=True, sev='LOW')
+            except Exception as e:
+                exit(1)    
+        elif arguments.get('-d') and arguments.get('<format>') and arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'),arguments.get('<exportFileName>'), deep_scan=True)
+            except Exception as e:
+                exit(1)    
+        elif arguments.get('-d') and arguments.get('<format>') and not arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'), deep_scan=True)
+            except Exception as e:
+                exit(1)
+        elif arguments.get('-d') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
             try:
                 read_from_env(deep_scan=True)
             except Exception as e:
+                exit(1)                      
+        elif arguments.get('high') and arguments.get('<format>') and arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'),arguments.get('<exportFileName>'), sev='HIGH')
+            except Exception as e:
                 exit(1)
-        elif arguments.get('high'):
+        elif arguments.get('high') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
             try:
                 read_from_env(sev='HIGH')
             except Exception as e:
                 exit(1)
-        elif arguments.get('medium'):
+        elif arguments.get('high') and arguments.get('<format>') and not arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'), sev='HIGH')
+            except Exception as e:
+                exit(1)    
+        elif arguments.get('medium') and arguments.get('<format>') and arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'), arguments.get('<exportFileName>'), sev='MEDIUM')
+            except Exception as e:
+                exit(1)    
+        elif arguments.get('medium') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
             try:
                 read_from_env(sev='MEDIUM')
             except Exception as e:
                 exit(1)
-        elif arguments.get('low'):
+        elif arguments.get('medium') and arguments.get('<format>') and not arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'), sev='MEDIUM')
+            except Exception as e:
+                exit(1)  
+        elif arguments.get('low') and arguments.get('<format>') and arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'), arguments.get('<exportFileName>'), sev='LOW')
+            except Exception as e:
+                exit(1)              
+        elif arguments.get('low') and not arguments.get('<exportFileName>') and not arguments.get('<format>'):
             try:
                 read_from_env(sev='LOW')
             except Exception as e:
                 exit(1)
+        elif arguments.get('low') and arguments.get('<format>') and not arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'), sev='LOW')
+            except Exception as e:
+                exit(1)          
+        elif arguments.get('<format>') and not arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'))
+            except Exception as e:
+                exit(1)  
+        elif arguments.get('<format>') and arguments.get('<exportFileName>'):
+            try:
+                read_from_env(arguments.get('<format>'), arguments.get('<exportFileName>'))
+            except Exception as e:
+                exit(1)        
         else:
             try:
                 read_from_env()
@@ -183,29 +263,45 @@ def main():
         except Exception as e:
             exit(1)
     if arguments.get('fix'):
-        try:
-            find_req_file = find_file('requirements.txt', '.')
-            find_pipenv_file = find_file('Pipfile.lock', '.')
-            if find_req_file:
-                fix_packages(find_req_file)
-            elif find_pipenv_file:
-                fix_packages(find_pipenv_file, is_pipenv=True)
-            else:
+        if arguments.get('-d') and arguments.get('high'):
+            fix_packages(sev='HIGH', deep_scan=True)
+        elif arguments.get('-d') and arguments.get('medium'):
+            fix_packages(sev='MEDIUM', deep_scan=True)
+        elif arguments.get('-d') and arguments.get('low'):
+            fix_packages(sev='LOW', deep_scan=True)
+        elif arguments.get('high'):
+            fix_packages(sev='HIGH')
+        elif arguments.get('medium'):
+            fix_packages(sev='MEDIUM')
+        elif arguments.get('low'):
+            fix_packages(sev='LOW')
+        elif arguments.get('-d'):
+            fix_packages(deep_scan=True)
+        else:
+            try:
                 fix_packages()
-        except Exception as e:
-            exit(1)
+            except Exception as e:
+                exit(1)
     if arguments.get('autofix'):
-        try:
-            find_req_file = find_file('requirements.txt', '.')
-            find_pipenv_file = find_file('Pipfile.lock', '.')
-            if find_req_file:
-                auto_fix_all_packages(find_req_file)
-            elif find_pipenv_file:
-                auto_fix_all_packages(find_pipenv_file, is_pipenv=True)
-            else:
+        if arguments.get('-d') and arguments.get('high'):
+            auto_fix_all_packages(sev='HIGH', deep_scan=True)
+        elif arguments.get('-d') and arguments.get('medium'):
+            auto_fix_all_packages(sev='MEDIUM', deep_scan=True)
+        elif arguments.get('-d') and arguments.get('low'):
+            auto_fix_all_packages(sev='LOW', deep_scan=True)
+        elif arguments.get('high'):
+            auto_fix_all_packages(sev='HIGH')
+        elif arguments.get('medium'):
+            auto_fix_all_packages(sev='MEDIUM')
+        elif arguments.get('low'):
+            auto_fix_all_packages(sev='LOW')
+        elif arguments.get('-d'):
+            auto_fix_all_packages(deep_scan=True)
+        else:
+            try:
                 auto_fix_all_packages()
-        except Exception as e:
-            exit(1)
+            except Exception as e:
+                exit(1)
     if arguments.get('updatedb'):
         if arguments.get('-d'):
             try:
