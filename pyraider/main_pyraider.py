@@ -8,12 +8,16 @@ from pyraider.utils import export_to_csv, export_to_json, show_vulnerablities, \
     validate_version, fix, auto_fix_all, show_secure_packages, get_info_from_pypi, check_latestdb, scan_light_vulnerabilities, export_to_html
 
 
-def read_from_env(deep_scan=False,sev=None):
+def read_from_env(export_format=None, export_file_path=None,deep_scan=False,sev=None):
     """
         Collect requirments from env and scan and show reports
     """
     print(stylize('Started Scanning .....', colored.fg("green")))
     print('\n')
+    data_dict = {}
+    secure_data_dict = []
+    data_dict['pyraider'] = []
+    data_dict['version'] = '1.0.3'
     vul_package_count = 0
     if deep_scan:
         data = scan_vulnerabilities()
@@ -28,7 +32,24 @@ def read_from_env(deep_scan=False,sev=None):
         scanned_data = scanned_vulnerable_data(data, req_name, req_version, sev)
         if bool(scanned_data):
             vul_package_count += 1
-            show_vulnerablities(scanned_data, sev)
+            if not export_format:
+                show_vulnerablities(scanned_data, sev)
+            if export_format == 'json':
+                data_dict['pyraider'].append(scanned_data)
+            elif export_format == 'csv':
+                data_dict['pyraider'].append(scanned_data)
+            elif export_format == 'html':
+                data_dict['pyraider'].append(scanned_data)
+            if not export_format:
+                show_secure_packages(secure_data_dict)
+        if not export_format:
+            show_secure_packages(secure_data_dict)
+    if export_format == 'json':
+        export_to_json(data_dict, export_file_path)
+    elif export_format == 'csv':
+        export_to_csv(data_dict, export_file_path)
+    elif export_format == 'html':
+        export_to_html(data_dict, export_file_path)
     if vul_package_count == 0:
         print(stylize('No known vulnerabilities found', colored.fg("green")))
 
@@ -92,7 +113,7 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, deep
     data_dict = {}
     secure_data_dict = []
     data_dict['pyraider'] = []
-    data_dict['version'] = '1.0.2'
+    data_dict['version'] = '1.0.3'
     vul_package_count = 0
     filename, file_extension = os.path.splitext(to_scan_file)
     if deep_scan:
@@ -156,83 +177,61 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, deep
         print(stylize('No known vulnerabilities found', colored.fg("green")))
 
 
-def fix_packages(to_scan_file=None, is_pipenv=False):
+def fix_packages(to_scan_file=None, is_pipenv=False, sev=None, deep_scan=False):
     """
         Update one by one packages
-    """
-    if to_scan_file:
-        if is_pipenv:
-            with open(to_scan_file) as fp:
-                line = json.loads(fp.read())
-                for k, v in line['default'].items():
-                    validated_data = validate_version(
-                        k.lower(), v['version'].split("==")[1])
-                    fix(validated_data, to_scan_file, is_pipenv=True)
-        else:
-            with open(to_scan_file) as fp:
-                line = fp.readline()
-                cnt = 1
-                while line:
-                    req = line.strip().split('==')
-                    if len(req) == 2:
-                        req_name = req[0].lower()
-                        req_version = req[1]
-                        validated_data = validate_version(
-                            req_name, req_version)
-                        fix(validated_data, to_scan_file)
-                    line = fp.readline()
-                    cnt += 1
+    """ 
+    print(stylize('Started Scanning .....', colored.fg("green")))
+    print('\n')
+    if deep_scan:
+        data = scan_vulnerabilities()
     else:
-        dists = [d for d in pkg_resources.working_set]
-        for pkg in dists:
-            convert_str = str(pkg)
-            package = convert_str.split()
-            req_name = package[0].lower()
-            req_version = package[1]
-            validated_data = validate_version(req_name, req_version)
-            fix(validated_data, to_scan_file)
+        data = scan_light_vulnerabilities()
+    dists = [d for d in pkg_resources.working_set]
+    data_list = []
+    vul_package_count = 0
+    for pkg in dists:
+        convert_str = str(pkg)
+        package = convert_str.split()
+        req_name = package[0].lower()
+        req_version = package[1]
+        scanned_data = scanned_vulnerable_data(data, req_name, req_version, sev)
+        if bool(scanned_data):
+            vul_package_count += 1
+            data_list.append(scanned_data)
+    if len(data_list)  > 0:
+        fix(data_list)
+    if vul_package_count == 0:
+        print(stylize('No known vulnerabilities found', colored.fg("green")))
 
 
-def auto_fix_all_packages(to_scan_file=None, is_pipenv=False):
+def auto_fix_all_packages(to_scan_file=None, is_pipenv=False, sev=None, deep_scan=False):
     """
         Update all packages
     """
-    if to_scan_file:
-        all_packages = []
-        if is_pipenv:
-            with open(to_scan_file) as fp:
-                line = json.loads(fp.read())
-                for k, v in line['default'].items():
-                    validated_data = validate_version(
-                        k.lower(), v['version'].split("==")[1])
-                    all_packages.append(validated_data)
-            auto_fix_all(all_packages, to_scan_file, is_pipenv=True)
-        else:
-            with open(to_scan_file) as fp:
-                line = fp.readline()
-                cnt = 1
-                while line:
-                    req = line.strip().split('==')
-                    if len(req) == 2:
-                        req_name = req[0].lower()
-                        req_version = req[1]
-                        validated_data = validate_version(
-                            req_name, req_version)
-                        all_packages.append(validated_data)
-                    line = fp.readline()
-                    cnt += 1
-            auto_fix_all(all_packages, to_scan_file)
+    print(stylize('Started Scanning .....', colored.fg("green")))
+    print('\n')
+    if deep_scan:
+        data = scan_vulnerabilities()
     else:
-        all_packages = []
-        dists = [d for d in pkg_resources.working_set]
-        for pkg in dists:
-            convert_str = str(pkg)
-            package = convert_str.split()
-            req_name = package[0].lower()
-            req_version = package[1]
-            validated_data = validate_version(req_name, req_version)
-            all_packages.append(validated_data)
-        auto_fix_all(all_packages, to_scan_file)
+        data = scan_light_vulnerabilities()
+    all_packages = []
+    vul_package_count = 0
+    dists = [d for d in pkg_resources.working_set]
+    for pkg in dists:
+        convert_str = str(pkg)
+        package = convert_str.split()
+        req_name = package[0].lower()
+        req_version = package[1]
+        scanned_data = scanned_vulnerable_data(data, req_name, req_version, sev)
+        if bool(scanned_data):
+            vul_package_count += 1
+            all_packages.append(scanned_data)
+    if len(all_packages) > 0:
+        auto_fix_all(all_packages)
+    if vul_package_count == 0:
+        print(stylize('No known vulnerabilities found', colored.fg("green")))
+    
 
 
 def update_db(deep_scan=False):

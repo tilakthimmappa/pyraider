@@ -2,7 +2,7 @@
 
 > Using PyRaider You can scan installed dependencies known security vulnerabilities. It uses publicly known exploits, vulnerabilities database. [Documentation](https://pyraider.raidersource.com)
 
-**Latest Version: 1.0.2**
+**Latest Version: 1.0.3**
 
 **Note: Currently pyraider support above `python3` version.**
 
@@ -12,14 +12,19 @@
 ## Usage
 
 # Table of Contents
-1. [Installation](https://pyraider.raidersource.com/#/Installation)
-2. [Scan Pakage](https://pyraider.raidersource.com/#/Scan?id=scan-python-packages)
-2. [Scan Package by Severity](https://pyraider.raidersource.com/#/Scan?id=scan-packages-by-severity)
-3. [Report](https://pyraider.raidersource.com/#/Report)
-3. [CI/CD](https://pyraider.raidersource.com/#/CICD)
-4. [Outdated package check](https://pyraider.raidersource.com/#/Validate)
+1. [Installation](https://pyraider.raidersource.com/docs/installation)
+2. [Usage](https://pyraider.raidersource.com/docs/usage)
+3. [Scan Dependencies](https://pyraider.raidersource.com/docs/go)
+4. [Scan Dependencies by Severity](https://pyraider.raidersource.com/docs/go-sev)
+5. [Report](https://pyraider.raidersource.com/docs/json-reports)
+6. [Outdated package check](https://pyraider.raidersource.com/docs/outdated-packages)
+7. [CI/CD](https://pyraider.raidersource.com/docs/jenkins-ci-cd)
+8. [Fix](https://pyraider.raidersource.com/docs/fix)
+9. [Autofix](https://pyraider.raidersource.com/docs/autofix)
+10. [Release Note](https://pyraider.raidersource.com/docs/release-note)
+11. [Help](https://pyraider.raidersource.com/docs/help)
 
-[Documentation](https://pyraider.raidersource.com/#/)
+[Documentation](https://pyraider.raidersource.com/)
 
 ### Install `pyraider` using `pip` or `pyenv`
 
@@ -63,37 +68,42 @@ pyraider check -f /Users/raider/project/Pipfile.lock
 ### To Export as a `JSON` file.
 
 ```commandline
-pyraider check -f /Users/raider/project/requirments.txt -e json result.json
+pyraider go -e json result.json
 ```
 
 ```commandline
-pyraider check -f /Users/raider/project/Pipfile.lock -e json result.json
+pyraider check -f /Users/raider/project/requirments.txt -e json result.json
 ```
 
 
 ### To Export as a `CSV` file.
 
 ```commandline
-pyraider check -f /Users/raider/project/requirments.txt -e csv result.csv
+pyraider go -e csv result.csv
 ```
 
 ```commandline
-pyraider check -f /Users/raider/project/Pipfile.lock -e csv result.csv
+pyraider check -f /Users/raider/project/requirments.txt -e csv result.csv
 ```
 
+
 ### To Export as a `HTML` file.
+
+```commandline
+pyraider check -f go -e html result.html
+```
 
 ```commandline
 pyraider check -f /Users/raider/project/requirments.txt -e html result.html
 ```
 
-```commandline
-pyraider check -f /Users/raider/project/Pipfile.lock -e html result.html
-```
-
 
 ## Out of Date Pacakges
 > Using PyRaider you can check the latest packages. Against installed packages.
+
+```commandline
+pyraider validate -p django==1.11.13
+```
 
 ```commandline
 pyraider validate -f /Users/raider/project/requirments.txt
@@ -103,29 +113,34 @@ pyraider validate -f /Users/raider/project/requirments.txt
 pyraider validate -f /Users/raider/project/Pipfile.lock
 ```
 
-* It will check out of dated packages on the actiavted virtual environment.
-```commandline
-pyraider validate -p django==1.11.13
-```
-
 
 ## Auto Fix
-> PyRaider also supports `auto fix` feature. Using this you can fix the vulnerable packages.
+> PyRaider also supports `fix` feature. Using this you can fix the vulnerable packages.
 
 **Note:** To updating the packages might affect your application.
 
 ### Fix
-> You can fix packages vulnerabilities individually. Once it is installed it will automatically update the `requirments.txt` or `Pipfile.lock` file.
+> You can fix vulnerable package.
 
 ```
 pyraider fix
 ```
+### Fix by Severity
+
+```
+pyraider fix -s high
+```
 
 ### Autofix
-> You can also fix packages vulnerabilities at one shot. Once it is installed it will automatically update the `requirments.txt` or `Pipfile.lock` file.
+> You can also autofix vulnerable packages.
 
 ```
 pyraider autofix
+```
+
+### Autofix by severity
+```
+pyraider autofix -s high
 ```
 
 ### Update latest database
@@ -144,9 +159,10 @@ pyraider updatedb
 docker build -t pyraider .
 ```
 
-### Author
-    
-* [Tilak Thimmapppa](https://tilakt.com/)
+### Contact us:
+* Discord : [Click here](https://discord.gg/nxQgrT) to join Discord, to be a part of **PyRaider** family.
+* Follow us on Twitter : https://twitter.com/raidersrc
+* Email : raidersource@gmail.com
 
 ### Contribute
 * We welcome contributions to this project in the form of:
@@ -156,6 +172,7 @@ docker build -t pyraider .
     * Add-on features, plugins, etc
     * Documentation
 
-### Contact us:
-* Email : tilaknayarmelpal@gmail.com
+### Author
+    
+* [Tilak Thimmapppa](https://tilakt.com/)
 * Twitter : https://twitter.com/ti1akt
