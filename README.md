@@ -160,7 +160,7 @@ docker build -t pyraider .
 ```
 
 ### Contact us:
-* Discord : [Click here](https://discord.gg/nxQgrT) to join Discord, to be a part of **PyRaider** family.
+* Discord : [Click here](https://discord.gg/tBbmCJq) to join Discord, to be a part of **PyRaider** family.
 * Follow us on Twitter : https://twitter.com/raidersrc
 * Email : raidersource@gmail.com
 
