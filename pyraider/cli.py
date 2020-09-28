@@ -45,7 +45,7 @@ logo = """
          __/ |
         |___/
 
-by RaiderSource version 1.0.3
+by RaiderSource version 1.0.4
 """
 
 
@@ -60,7 +60,7 @@ def find_file(name, path):
 
 def main():
     print(logo)
-    arguments = docopt(__doc__, version='1.0.3')
+    arguments = docopt(__doc__, version='1.0.4')
     if arguments.get('check'):
         if arguments.get('high'):
             if arguments.get('<filename>') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):
