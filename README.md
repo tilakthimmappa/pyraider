@@ -4,7 +4,7 @@
 
 ![version](https://img.shields.io/badge/release-1.0.4-success)
 ![python version](https://img.shields.io/badge/python%20version-3%20%3E-blue)
-![license](https://img.shields.io/badge/license-apache%20v2-brightgreen)
+![license](https://img.shields.io/badge/license-MIT-brightgreen)
 [![Discord](https://img.shields.io/badge/chat-discord-46BC99.svg)](https://discord.gg/nxQgrT)
 [![Twitter](https://img.shields.io/badge/follow--informational?style=social&logo=twitter)](https://twitter.com/ti1akt)
 
