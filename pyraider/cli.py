@@ -12,12 +12,12 @@ Examples:
   pyraider go -s high
   pyraider go -e json
   pyraider go -e json -s high
-  pyraider check -f requirments.txt
-  pyraider check -f requirments.txt -e json result.json
-  pyraider check -f requirments.txt -e json result.json -s high
+  pyraider check -f requirements.txt
+  pyraider check -f requirements.txt -e json result.json
+  pyraider check -f requirements.txt -e json result.json -s high
   pyraider validate
   pyraider validate -p django==1.11.13
-  pyraider validate -f requirments.txt
+  pyraider validate -f requirements.txt
   pyraider fix
   pyraider fix -s high
   pyraider autofix
@@ -45,13 +45,13 @@ logo = """
          __/ |
         |___/
 
-by RaiderSource version 1.0.4
+by RaiderSource version 1.0.5
 """
 
 
 def find_file(name, path):
     """
-        Find requirments.txt file
+        Find requirements.txt file
     """
     for root, dirs, files in os.walk(path):
         if name in files:
@@ -60,7 +60,7 @@ def find_file(name, path):
 
 def main():
     print(logo)
-    arguments = docopt(__doc__, version='1.0.4')
+    arguments = docopt(__doc__, version='1.0.5')
     if arguments.get('check'):
         if arguments.get('high'):
             if arguments.get('<filename>') and not arguments.get('<exportFileName>') and not arguments.get('<format>') and not arguments.get('-d'):

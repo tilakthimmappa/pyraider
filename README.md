@@ -2,7 +2,7 @@
 
 > Using PyRaider You can scan installed dependencies known security vulnerabilities. It uses publicly known exploits, vulnerabilities database. [Documentation](https://pyraider.raidersource.com)
 
-![version](https://img.shields.io/badge/release-1.0.4-success)
+![version](https://img.shields.io/badge/release-1.0.5-success)
 ![python version](https://img.shields.io/badge/python%20version-3%20%3E-blue)
 ![license](https://img.shields.io/badge/license-MIT-brightgreen)
 [![Downloads](https://static.pepy.tech/personalized-badge/pyraider?period=total&units=international_system&left_color=grey&right_color=brightgreen&left_text=Downloads)](https://pepy.tech/project/pyraider)
@@ -76,7 +76,7 @@ pyraider go -e json result.json
 ```
 
 ```commandline
-pyraider check -f /Users/raider/project/requirments.txt -e json result.json
+pyraider check -f /Users/raider/project/requirements.txt -e json result.json
 ```
 
 
@@ -87,7 +87,7 @@ pyraider go -e csv result.csv
 ```
 
 ```commandline
-pyraider check -f /Users/raider/project/requirments.txt -e csv result.csv
+pyraider check -f /Users/raider/project/requirements.txt -e csv result.csv
 ```
 
 
@@ -98,7 +98,7 @@ pyraider check -f go -e html result.html
 ```
 
 ```commandline
-pyraider check -f /Users/raider/project/requirments.txt -e html result.html
+pyraider check -f /Users/raider/project/requirements.txt -e html result.html
 ```
 
 
@@ -110,7 +110,7 @@ pyraider validate -p django==1.11.13
 ```
 
 ```commandline
-pyraider validate -f /Users/raider/project/requirments.txt
+pyraider validate -f /Users/raider/project/requirements.txt
 ```
 
 ```commandline

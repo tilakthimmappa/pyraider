@@ -1,4 +1,4 @@
-from beautifultable import BeautifulTable
+from beautifultable import BeautifulTable, BTRowCollection
 import colored
 from colored import stylize
 import csv
@@ -125,27 +125,27 @@ def show_high_severity_vulnerabilities(data_dict):
     """    
     for k, v in data_dict.items():
         parent_table = BeautifulTable()
-        parent_table.append_row(['Package', k])
+        parent_table.rows.append(['Package', k])
         if v.get('severity') == 'HIGH':
-            parent_table.append_row(
+            parent_table.rows.append(
                 ["Severity", stylize(v.get('severity'), colored.fg("red"))])
-            parent_table.append_row(['CWE', v.get('cwe')])
-            parent_table.append_row(['CVE', v.get('cve')])        
+            parent_table.rows.append(['CWE', v.get('cwe')])
+            parent_table.rows.append(['CVE', v.get('cve')])        
             if v.get('current_version') < v.get('update_to'):
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("red"))])
             else:
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("green"))])
             if v.get('current_version') == v.get('update_to'):
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     'Package is up to date', colored.fg("green"))])
             else:
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     v.get('update_to'), colored.fg("green"))])
-            parent_table.append_row(['Description', v.get('description')])
-            parent_table.append_row(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
-            parent_table.append_row(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
+            parent_table.rows.append(['Description', v.get('description')])
+            parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
+            parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
             print('\n')
             print(parent_table)
 
@@ -155,27 +155,27 @@ def show_medium_severity_vulnerabilities(data_dict):
     """
     for k, v in data_dict.items():
         parent_table = BeautifulTable()
-        parent_table.append_row(['Package', k])
+        parent_table.rows.append(['Package', k])
         if v.get('severity') == 'MEDIUM':
-            parent_table.append_row(["Severity", stylize(
+            parent_table.rows.append(["Severity", stylize(
                 v.get('severity'), colored.fg("yellow"))])
-            parent_table.append_row(['CWE', v.get('cwe')])
-            parent_table.append_row(['CVE', v.get('cve')])        
+            parent_table.rows.append(['CWE', v.get('cwe')])
+            parent_table.rows.append(['CVE', v.get('cve')])        
             if v.get('current_version') < v.get('update_to'):
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("red"))])
             else:
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("green"))])
             if v.get('current_version') == v.get('update_to'):
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     'Package is up to date', colored.fg("green"))])
             else:
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     v.get('update_to'), colored.fg("green"))])
-            parent_table.append_row(['Description', v.get('description')])
-            parent_table.append_row(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
-            parent_table.append_row(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
+            parent_table.rows.append(['Description', v.get('description')])
+            parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
+            parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
             print('\n')
             print(parent_table)
 
@@ -185,27 +185,27 @@ def show_low_severity_vulnerabilities(data_dict):
     """
     for k, v in data_dict.items():
         parent_table = BeautifulTable()
-        parent_table.append_row(['Package', k])
+        parent_table.rows.append(['Package', k])
         if v.get('severity') == 'Low':
-            parent_table.append_row(
+            parent_table.rows.append(
                 ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
-            parent_table.append_row(['CWE', v.get('cwe')])
-            parent_table.append_row(['CVE', v.get('cve')])        
+            parent_table.rows.append(['CWE', v.get('cwe')])
+            parent_table.rows.append(['CVE', v.get('cve')])        
             if v.get('current_version') < v.get('update_to'):
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("red"))])
             else:
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("green"))])
             if v.get('current_version') == v.get('update_to'):
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     'Package is up to date', colored.fg("green"))])
             else:
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     v.get('update_to'), colored.fg("green"))])
-            parent_table.append_row(['Description', v.get('description')])
-            parent_table.append_row(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
-            parent_table.append_row(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
+            parent_table.rows.append(['Description', v.get('description')])
+            parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
+            parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
             print('\n')
             print(parent_table)
 
@@ -223,36 +223,36 @@ def show_vulnerablities(data_dict,sev=None):
     else:       
         for k, v in data_dict.items():
             parent_table = BeautifulTable()
-            parent_table.append_row(['Package', k])
+            parent_table.rows.append(['Package', k])
             if v.get('severity') == 'HIGH':
-                parent_table.append_row(
+                parent_table.rows.append(
                     ["Severity", stylize(v.get('severity'), colored.fg("red"))])
             elif v.get('severity') == 'MEDIUM':
-                parent_table.append_row(["Severity", stylize(
+                parent_table.rows.append(["Severity", stylize(
                     v.get('severity'), colored.fg("yellow"))])
             elif v.get('severity') == 'LOW':
-                parent_table.append_row(
+                parent_table.rows.append(
                     ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
             else:
-                parent_table.append_row(
+                parent_table.rows.append(
                     ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
-            parent_table.append_row(['CWE', v.get('cwe')])
-            parent_table.append_row(['CVE', v.get('cve')])        
+            parent_table.rows.append(['CWE', v.get('cwe')])
+            parent_table.rows.append(['CVE', v.get('cve')])        
             if v.get('current_version') < v.get('update_to'):
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("red"))])
             else:
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("green"))])
             if v.get('current_version') == v.get('update_to'):
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     'Package is up to date', colored.fg("green"))])
             else:
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     v.get('update_to'), colored.fg("green"))])
-            parent_table.append_row(['Description', v.get('description')])
-            parent_table.append_row(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
-            parent_table.append_row(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
+            parent_table.rows.append(['Description', v.get('description')])
+            parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
+            parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
             print('\n')
             print(parent_table)
 
@@ -264,10 +264,10 @@ def show_secure_packages(data_dict):
     for secure in data_dict:
         for k, v in secure.items():
             parent_table = BeautifulTable()
-            parent_table.append_row(['Package', k])
-            parent_table.append_row(['Current version', stylize(
+            parent_table.rows.append(['Package', k])
+            parent_table.rows.append(['Current version', stylize(
                 v.get('current_version'), colored.fg("green"))])
-            parent_table.append_row(['Status', stylize(
+            parent_table.rows.append(['Status', stylize(
                 'No known security vulnerabilities found', colored.fg("green"))])
             print('\n')
             print(parent_table)
@@ -280,22 +280,22 @@ def render_package_update_report(data_dict):
     print("\n")
     for k, v in data_dict.items():
         parent_table = BeautifulTable()
-        parent_table.append_row(['Package', k])
+        parent_table.rows.append(['Package', k])
         if v.get('current_version') !=None:
             if v.get('current_version') < v.get('update_to'):
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("red"))])
             else:
-                parent_table.append_row(['Current version', stylize(
+                parent_table.rows.append(['Current version', stylize(
                     v.get('current_version'), colored.fg("green"))])
             if v.get('current_version') == v.get('update_to'):
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     'Package is up to date', colored.fg("green"))])
             else:
-                parent_table.append_row(['Update To', stylize(
+                parent_table.rows.append(['Update To', stylize(
                     v.get('update_to'), colored.fg("green"))])
         else:
-             parent_table.append_row(['Latest Version', stylize(
+             parent_table.rows.append(['Latest Version', stylize(
                     v.get('update_to'), colored.fg("green"))])
 
         print('\n')

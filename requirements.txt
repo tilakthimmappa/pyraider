@@ -1,4 +1,4 @@
-docopt==0.6.2
-beautifultable==0.8.0
-colored==1.4.2
-json2html==1.3.0
+docopt
+beautifultable
+colored
+json2html
