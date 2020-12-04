@@ -6,7 +6,7 @@ import hashlib
 import json
 from json2html import *
 import os
-import pickle
+import pickle5 as pickle
 from pkg_resources import parse_version
 import subprocess
 import sys
