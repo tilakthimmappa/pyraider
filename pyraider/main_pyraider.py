@@ -17,7 +17,7 @@ def read_from_env(export_format=None, export_file_path=None,deep_scan=False,sev=
     data_dict = {}
     secure_data_dict = []
     data_dict['pyraider'] = []
-    data_dict['version'] = '1.0.7'
+    data_dict['version'] = '1.0.11'
     vul_package_count = 0
     if deep_scan:
         data = scan_vulnerabilities()
@@ -113,7 +113,7 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, deep
     data_dict = {}
     secure_data_dict = []
     data_dict['pyraider'] = []
-    data_dict['version'] = '1.0.7'
+    data_dict['version'] = '1.0.11'
     vul_package_count = 0
     filename, file_extension = os.path.splitext(to_scan_file)
     if deep_scan:
@@ -156,7 +156,6 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, deep
                     if bool(txt_scanned_data):
                         vul_package_count +=1
                         if not export_format:
-                            # print("txt_scanned_data", sev)
                             show_vulnerablities(txt_scanned_data, sev)
                         if export_format == 'json':
                             data_dict['pyraider'].append(txt_scanned_data)
