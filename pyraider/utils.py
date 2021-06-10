@@ -380,17 +380,24 @@ def scan_light_vulnerabilities():
         return data
 
 
-def check_latestdb(deep_scan=False):
+def check_latestdb():
     """
         check and download the latest database
     """
     this_dir, this_filename = os.path.split(__file__)
-    if deep_scan:
-        data_path = os.path.join(this_dir, 'resource.json')
-        print(stylize('Resource database is already upto date', colored.fg("green")))
-    else:
-        data_path = os.path.join(this_dir, 'resource_light.json')
-        print(stylize('Resource database is already upto date', colored.fg("green")))
+    data_path = os.path.join(this_dir, 'resource_light.json')
+    if os.path.exists(data_path):
+        os.remove(data_path)
+    print(stylize('Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
+    ssl._create_default_https_context = ssl._create_unverified_context
+    url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource_light.json'
+    try:
+        urlretrieve(url, data_path, download_progress)
+    except Exception as e:
+        print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
+                        colored.fg("red")))
+    if os.path.exists(data_path):
+        print(stylize('Resource database successfully downloaded and its last updated on Jun 2021', colored.fg("green")))
 
 def scanned_high_severity(data, req_name, req_version):
     """

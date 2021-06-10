@@ -17,7 +17,7 @@ def read_from_env(export_format=None, export_file_path=None,deep_scan=False,sev=
     data_dict = {}
     secure_data_dict = []
     data_dict['pyraider'] = []
-    data_dict['version'] = '1.0.11'
+    data_dict['version'] = '1.0.13'
     vul_package_count = 0
     if deep_scan:
         data = scan_vulnerabilities()
@@ -113,7 +113,7 @@ def read_from_file(to_scan_file, export_format=None, export_file_path=None, deep
     data_dict = {}
     secure_data_dict = []
     data_dict['pyraider'] = []
-    data_dict['version'] = '1.0.11'
+    data_dict['version'] = '1.0.13'
     vul_package_count = 0
     filename, file_extension = os.path.splitext(to_scan_file)
     if deep_scan:
@@ -234,6 +234,6 @@ def auto_fix_all_packages(to_scan_file=None, is_pipenv=False, sev=None, deep_sca
     
 
 
-def update_db(deep_scan=False):
-    check_latestdb(deep_scan)
+def update_db():
+    check_latestdb()
 # End-of-file
