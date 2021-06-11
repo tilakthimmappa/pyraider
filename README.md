@@ -6,7 +6,7 @@
 ![python version](https://img.shields.io/badge/python-3-blue)
 ![license](https://img.shields.io/badge/license-MIT-brightgreen)
 [![Downloads](https://static.pepy.tech/personalized-badge/pyraider?period=total&units=international_system&left_color=black&right_color=orange&left_text=downloads)](https://pepy.tech/project/pyraider)
-[![Discord](https://img.shields.io/badge/chat-discord-46BC99.svg)](https://discord.gg/nxQgrT)
+[![Discord](https://img.shields.io/badge/chat-discord-46BC99.svg)](https://discord.gg/SdX62BnS8Y)
 [![Twitter](https://img.shields.io/badge/follow--informational?style=social&logo=twitter)](https://twitter.com/ti1akt)
 
 
