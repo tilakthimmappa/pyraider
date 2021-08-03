@@ -179,4 +179,4 @@ docker build -t pyraider .
 ### Author
     
 * [Tilak Thimmapppa](https://tilakt.com/)
-* Twitter : https://twitter.com/ti1akt
+* Twitter : https://twitter.com/tilakthimmappa
