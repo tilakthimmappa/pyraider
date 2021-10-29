@@ -397,7 +397,7 @@ def check_latestdb():
         print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
                         colored.fg("red")))
     if os.path.exists(data_path):
-        print(stylize('Resource database successfully downloaded and its last updated on Jun 2021', colored.fg("green")))
+        print(stylize('Resource database successfully downloaded and its last updated on October 2021', colored.fg("green")))
 
 def scanned_high_severity(data, req_name, req_version):
     """
