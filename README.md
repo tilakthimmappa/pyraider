@@ -2,12 +2,12 @@
 
 > Using PyRaider You can scan installed dependencies known security vulnerabilities. It uses publicly known exploits, vulnerabilities database. [Documentation](https://pyraider.raidersource.com)
 
-![version](https://img.shields.io/badge/release-1.0.14-success)
+![version](https://img.shields.io/badge/release-1.0.18-success)
 ![python version](https://img.shields.io/badge/python-3-blue)
 ![license](https://img.shields.io/badge/license-MIT-brightgreen)
 [![Downloads](https://static.pepy.tech/personalized-badge/pyraider?period=total&units=international_system&left_color=black&right_color=orange&left_text=downloads)](https://pepy.tech/project/pyraider)
 [![Discord](https://img.shields.io/badge/chat-discord-46BC99.svg)](https://discord.gg/SdX62BnS8Y)
-[![Twitter](https://img.shields.io/badge/follow--informational?style=social&logo=twitter)](https://twitter.com/ti1akt)
+[![Twitter](https://img.shields.io/badge/follow--informational?style=social&logo=twitter)](https://twitter.com/tilakthimmappa)
 
 
 ![pyraider](img/pyraider_scan.png)
@@ -165,8 +165,8 @@ docker build -t pyraider .
 
 ### Contact us:
 * Discord : [Click here](https://discord.gg/tBbmCJq) to join Discord, to be a part of **PyRaider** family.
-* Follow us on Twitter : https://twitter.com/raidersrc
-* Email : raidersource@gmail.com
+* Follow us on Twitter : https://twitter.com/tilakthimmappa
+* Email : tilakthimmappa@gmail.com
 
 ### Contribute
 * We welcome contributions to this project in the form of:
@@ -179,4 +179,4 @@ docker build -t pyraider .
 ### Author
     
 * [Tilak Thimmapppa](https://tilakthimmappa.com/)
-* Twitter : https://twitter.com/tilakthimmappa
+* [Twitter](https://twitter.com/tilakthimmappa)

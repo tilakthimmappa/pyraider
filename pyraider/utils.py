@@ -1,13 +1,13 @@
-from beautifultable import BeautifulTable, BTRowCollection
+from beautifultable import BeautifulTable
 import colored
 from colored import stylize
 import csv
-import hashlib
 import json
 from json2html import *
 import os
 import pickle
 from pkg_resources import parse_version
+import pkg_resources
 import subprocess
 import sys
 import ssl
@@ -117,142 +117,47 @@ def export_to_csv(data_dict, export_file_path):
                             'Severity': v.get('severity'), 'CWE': v.get('cwe'),
                             'CVE': v.get('cve'), 'Update Version': v.get('update_to')})
 
-def show_high_severity_vulnerabilities(data_dict):
+
+def show_vulnerablities(data_dict):
     """
-        Only High severity
-    """    
+        Render Vulnerable data into a terminal table
+    """   
     for k, v in data_dict.items():
         parent_table = BeautifulTable()
         parent_table.rows.append(['Package', k])
         if v.get('severity') == 'HIGH':
             parent_table.rows.append(
                 ["Severity", stylize(v.get('severity'), colored.fg("red"))])
-            parent_table.rows.append(['CWE', v.get('cwe')])
-            parent_table.rows.append(['CVE', v.get('cve')])        
-            if v.get('current_version') < v.get('update_to'):
-                parent_table.rows.append(['Current version', stylize(
-                    v.get('current_version'), colored.fg("red"))])
-            else:
-                parent_table.rows.append(['Current version', stylize(
-                    v.get('current_version'), colored.fg("green"))])
-            if v.get('current_version') == v.get('update_to'):
-                parent_table.rows.append(['Update To', stylize(
-                    'Package is up to date', colored.fg("green"))])
-            else:
-                parent_table.rows.append(['Update To', stylize(
-                    v.get('update_to'), colored.fg("green"))])
-            parent_table.rows.append(['Description', v.get('description')])
-            parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
-            parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
-            print('\n')
-            print(parent_table)
-
-def show_medium_severity_vulnerabilities(data_dict):
-    """
-        Only Medium severity
-    """
-    for k, v in data_dict.items():
-        parent_table = BeautifulTable()
-        parent_table.rows.append(['Package', k])
-        if v.get('severity') == 'MEDIUM':
+        elif v.get('severity') == 'MEDIUM':
             parent_table.rows.append(["Severity", stylize(
                 v.get('severity'), colored.fg("yellow"))])
-            parent_table.rows.append(['CWE', v.get('cwe')])
-            parent_table.rows.append(['CVE', v.get('cve')])        
-            if v.get('current_version') < v.get('update_to'):
-                parent_table.rows.append(['Current version', stylize(
-                    v.get('current_version'), colored.fg("red"))])
-            else:
-                parent_table.rows.append(['Current version', stylize(
-                    v.get('current_version'), colored.fg("green"))])
-            if v.get('current_version') == v.get('update_to'):
-                parent_table.rows.append(['Update To', stylize(
-                    'Package is up to date', colored.fg("green"))])
-            else:
-                parent_table.rows.append(['Update To', stylize(
-                    v.get('update_to'), colored.fg("green"))])
-            parent_table.rows.append(['Description', v.get('description')])
-            parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
-            parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
-            print('\n')
-            print(parent_table)
-
-def show_low_severity_vulnerabilities(data_dict):
-    """
-        Only Low severity
-    """
-    for k, v in data_dict.items():
-        parent_table = BeautifulTable()
-        parent_table.rows.append(['Package', k])
-        if v.get('severity') == 'Low':
+        elif v.get('severity') == 'LOW':
             parent_table.rows.append(
                 ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
-            parent_table.rows.append(['CWE', v.get('cwe')])
-            parent_table.rows.append(['CVE', v.get('cve')])        
-            if v.get('current_version') < v.get('update_to'):
-                parent_table.rows.append(['Current version', stylize(
-                    v.get('current_version'), colored.fg("red"))])
-            else:
-                parent_table.rows.append(['Current version', stylize(
-                    v.get('current_version'), colored.fg("green"))])
-            if v.get('current_version') == v.get('update_to'):
-                parent_table.rows.append(['Update To', stylize(
-                    'Package is up to date', colored.fg("green"))])
-            else:
-                parent_table.rows.append(['Update To', stylize(
-                    v.get('update_to'), colored.fg("green"))])
-            parent_table.rows.append(['Description', v.get('description')])
-            parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
-            parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
-            print('\n')
-            print(parent_table)
-
-
-def show_vulnerablities(data_dict,sev=None):
-    """
-        Render Vulnerable data into a terminal table
-    """
-    if sev == 'HIGH':
-        show_high_severity_vulnerabilities(data_dict)
-    elif sev == 'MEDIUM':
-        show_medium_severity_vulnerabilities(data_dict)
-    elif sev == 'LOW':
-        show_low_severity_vulnerabilities(data_dict)
-    else:       
-        for k, v in data_dict.items():
-            parent_table = BeautifulTable()
-            parent_table.rows.append(['Package', k])
-            if v.get('severity') == 'HIGH':
-                parent_table.rows.append(
-                    ["Severity", stylize(v.get('severity'), colored.fg("red"))])
-            elif v.get('severity') == 'MEDIUM':
-                parent_table.rows.append(["Severity", stylize(
-                    v.get('severity'), colored.fg("yellow"))])
-            elif v.get('severity') == 'LOW':
-                parent_table.rows.append(
-                    ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
-            else:
-                parent_table.rows.append(
-                    ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
-            parent_table.rows.append(['CWE', v.get('cwe')])
-            parent_table.rows.append(['CVE', v.get('cve')])        
-            if v.get('current_version') < v.get('update_to'):
-                parent_table.rows.append(['Current version', stylize(
-                    v.get('current_version'), colored.fg("red"))])
-            else:
-                parent_table.rows.append(['Current version', stylize(
-                    v.get('current_version'), colored.fg("green"))])
-            if v.get('current_version') == v.get('update_to'):
-                parent_table.rows.append(['Update To', stylize(
-                    'Package is up to date', colored.fg("green"))])
-            else:
-                parent_table.rows.append(['Update To', stylize(
-                    v.get('update_to'), colored.fg("green"))])
-            parent_table.rows.append(['Description', v.get('description')])
-            parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
-            parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
-            print('\n')
-            print(parent_table)
+        else:
+            parent_table.rows.append(
+                ["Severity", stylize(v.get('severity'), colored.fg("blue"))])
+        parent_table.rows.append(['CWE', v.get('cwe')])
+        parent_table.rows.append(['CVE', v.get('cve')])        
+        if v.get('current_version') < v.get('update_to'):
+            parent_table.rows.append(['Current version', stylize(
+                v.get('current_version'), colored.fg("red"))])
+        else:
+            parent_table.rows.append(['Current version', stylize(
+                v.get('current_version'), colored.fg("green"))])
+        if v.get('current_version') == v.get('update_to'):
+            parent_table.rows.append(['Update To', stylize(
+                'Package is up to date', colored.fg("green"))])
+        else:
+            parent_table.rows.append(['Update To', stylize(
+                v.get('update_to'), colored.fg("green"))])
+        parent_table.rows.append(['Description', v.get('description')])
+        if v.get('dependency', None):
+            parent_table.rows.append(['Dependency Of', v.get('dependency')])
+        parent_table.rows.append(['Resolve', "pip install {0}=={1}".format(k,v.get('update_to'))])
+        parent_table.rows.append(['More Info', "https://nvd.nist.gov/vuln/detail/{0}".format(v.get('cve'))])
+        print('\n')
+        print(parent_table)
 
 
 def show_secure_packages(data_dict):
@@ -336,7 +241,7 @@ def scan_vulnerabilities():
     """
         Read from database
     """
-    this_dir, this_filename = os.path.split(__file__)
+    this_dir, _ = os.path.split(__file__)
     data_path = os.path.join(this_dir, 'resource.json')
     if os.path.exists(data_path):
         f = open(data_path)
@@ -359,7 +264,7 @@ def scan_light_vulnerabilities():
     """
         Read from database
     """
-    this_dir, this_filename = os.path.split(__file__)
+    this_dir, _ = os.path.split(__file__)
     data_path = os.path.join(this_dir, 'resource_light.json')
     if os.path.exists(data_path):
         f = open(data_path)
@@ -384,7 +289,7 @@ def check_latestdb():
     """
         check and download the latest database
     """
-    this_dir, this_filename = os.path.split(__file__)
+    this_dir, _ = os.path.split(__file__)
     data_path = os.path.join(this_dir, 'resource_light.json')
     if os.path.exists(data_path):
         os.remove(data_path)
@@ -394,12 +299,28 @@ def check_latestdb():
     try:
         urlretrieve(url, data_path, download_progress)
     except Exception as e:
-        print(stylize('There is some error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
+        print(stylize('There is an error. You need to enable `https://pyraider-source-data.s3-us-west-2.amazonaws.com/` URL to download database',
                         colored.fg("red")))
     if os.path.exists(data_path):
-        print(stylize('Resource database successfully downloaded and its last updated on October 2021', colored.fg("green")))
+        print(stylize('Resource database successfully downloaded and its last updated on March 2022', colored.fg("green")))
 
-def scanned_high_severity(data, req_name, req_version):
+
+def show_dependencies(vul_pkg_name):
+    pkg = pkg_resources.working_set.by_key[vul_pkg_name]
+    data_dict = []
+    if len(pkg.requires()) > 0:
+        for vuls in pkg.requires():
+            data = {}
+            random_package_name = str(vuls)        
+            package_name = pkg_resources.Requirement.parse(random_package_name).key
+            package_version = pkg_resources.get_distribution(package_name).version
+            name = f"{package_name}:{package_version}"
+            data[name] = vul_pkg_name
+            data_dict.append(data)
+    return data_dict
+
+
+def scan_severity(data, req_name, req_version, sev):
     """
         Scan High vulnerable library
     """
@@ -408,51 +329,7 @@ def scanned_high_severity(data, req_name, req_version):
         if k.lower() == req_name:
             validated_version = get_info_from_pypi(k.lower())
             for vuls in v.get('info'):
-                if vuls.get('sev') == 'HIGH':                    
-                    if vuls.get('version'):
-                        if req_version <= vuls.get('version') or vuls.get('version') <= req_version:
-                            data_dict[k] = {}
-                            data_dict[k]['current_version'] = req_version
-                            data_dict[k]['update_to'] = validated_version
-                            data_dict[k]['cwe'] = vuls.get('cwe')
-                            data_dict[k]['cve'] = vuls.get('cve')
-                            data_dict[k]['severity'] = vuls.get('sev')
-                            if vuls.get('description'):
-                                data_dict[k]['description'] = vuls.get('description')
-    return data_dict
-
-def scanned_medium_severity(data, req_name, req_version):
-    """
-        Scan Medium vulnerable library
-    """
-    data_dict = {}
-    for k, v in data.items():
-        if k.lower() == req_name:
-            validated_version = get_info_from_pypi(k.lower())
-            for vuls in v.get('info'):
-                if vuls.get('sev') == 'MEDIUM':
-                    if vuls.get('version'):
-                        if req_version <= vuls.get('version') or vuls.get('version') <= req_version:
-                            data_dict[k] = {}
-                            data_dict[k]['current_version'] = req_version
-                            data_dict[k]['update_to'] = validated_version
-                            data_dict[k]['cwe'] = vuls.get('cwe')
-                            data_dict[k]['cve'] = vuls.get('cve')
-                            data_dict[k]['severity'] = vuls.get('sev')
-                            if vuls.get('description'):
-                                data_dict[k]['description'] = vuls.get('description')
-    return data_dict
-
-def scanned_low_severity(data, req_name, req_version):
-    """
-        Scan Low vulnerable library
-    """
-    data_dict = {}
-    for k, v in data.items():
-        if k.lower() == req_name:
-            validated_version = get_info_from_pypi(k.lower())
-            for vuls in v.get('info'):
-                if vuls.get('sev') == 'LOW':
+                if vuls.get('sev') == sev:                    
                     if vuls.get('version'):
                         if req_version <= vuls.get('version') or vuls.get('version') <= req_version:
                             data_dict[k] = {}
@@ -466,18 +343,12 @@ def scanned_low_severity(data, req_name, req_version):
     return data_dict
 
 
-def scanned_vulnerable_data(data, req_name, req_version,sev):
+def scan_vulnerable_data(data, req_name, req_version,sev):
     """
         Scan vulnerable library
     """
-    if sev == 'HIGH':
-        data_dict = scanned_high_severity(data, req_name, req_version)
-        return data_dict
-    elif sev == 'MEDIUM':
-        data_dict = scanned_medium_severity(data, req_name, req_version)
-        return data_dict
-    elif sev == 'LOW':
-        data_dict = scanned_low_severity(data, req_name, req_version)
+    if sev:
+        data_dict = scan_severity(data, req_name, req_version, sev)
         return data_dict
     else:
         data_dict = {}
@@ -526,6 +397,8 @@ def query_yes_no(question, default="yes"):
         else:
             sys.stdout.write("Please respond with 'yes' or 'no' "
                              "(or 'y' or 'n').\n")
+
+                             
 def check_installation(question, default="yes"):
     """
         Question prompt tag
