@@ -32,17 +32,17 @@
 
 ### Install `pyraider` using `pip` or `pyenv`
 
-```commandline
+```bash
 pip install pyraider
 ```
 
-```commandline
+```bash
 pyenv install pyraider
 ```
 
 ### To check the list of options available.
 
-```commandline
+```bash
 pyraider -h
 ```
 
@@ -52,17 +52,17 @@ pyraider -h
 ### To run basic scan you can use `pyraider go` command. 
 >It will automatically detects the installed packages and scans against it and shows the report.
 
-```commandline
+```bash
 pyraider go
 ```
 
 ### If you want to scan you packages against `requirements.txt` or `Pipfile.lock` file.
 
-```commandline
+```bash
 pyraider check -f /Users/raider/project/requirements.txt
 ```
 
-```commandline
+```bash
 pyraider check -f /Users/raider/project/Pipfile.lock
 ```
 
@@ -71,33 +71,33 @@ pyraider check -f /Users/raider/project/Pipfile.lock
 
 ### To Export as a `JSON` file.
 
-```commandline
+```bash
 pyraider go -e json result.json
 ```
 
-```commandline
+```bash
 pyraider check -f /Users/raider/project/requirements.txt -e json result.json
 ```
 
 
 ### To Export as a `CSV` file.
 
-```commandline
+```bash
 pyraider go -e csv result.csv
 ```
 
-```commandline
+```bash
 pyraider check -f /Users/raider/project/requirements.txt -e csv result.csv
 ```
 
 
 ### To Export as a `HTML` file.
 
-```commandline
+```bash
 pyraider check -f go -e html result.html
 ```
 
-```commandline
+```bash
 pyraider check -f /Users/raider/project/requirements.txt -e html result.html
 ```
 
@@ -105,15 +105,15 @@ pyraider check -f /Users/raider/project/requirements.txt -e html result.html
 ## Out of Date Pacakges
 > Using PyRaider you can check the latest packages. Against installed packages.
 
-```commandline
+```bash
 pyraider validate -p django==1.11.13
 ```
 
-```commandline
+```bash
 pyraider validate -f /Users/raider/project/requirements.txt
 ```
 
-```commandline
+```bash
 pyraider validate -f /Users/raider/project/Pipfile.lock
 ```
 
@@ -126,31 +126,31 @@ pyraider validate -f /Users/raider/project/Pipfile.lock
 ### Fix
 > You can fix vulnerable package.
 
-```
+```bash
 pyraider fix
 ```
 ### Fix by Severity
 
-```
+```bash
 pyraider fix -s high
 ```
 
 ### Autofix
 > You can also autofix vulnerable packages.
 
-```
+```bash
 pyraider autofix
 ```
 
 ### Autofix by severity
-```
+```bash
 pyraider autofix -s high
 ```
 
 ### Update latest database
 > Now you can update the resource database with latest updated vulnerabilities
 
-```
+```bash
 pyraider updatedb
 ```
 
@@ -159,7 +159,7 @@ pyraider updatedb
 
 ### Build docker container image
 
-```
+```bash
 docker build -t pyraider .
 ```
 
