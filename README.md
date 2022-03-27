@@ -10,7 +10,6 @@
 [![Twitter](https://img.shields.io/badge/follow--informational?style=social&logo=twitter)](https://twitter.com/tilakthimmappa)
 
 
-# Now this repository moved to [click here](https://github.com/tilakthimmappa/pyraider)
 
 
 
