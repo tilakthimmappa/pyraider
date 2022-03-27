@@ -2,7 +2,7 @@
 
 > Using PyRaider You can scan installed dependencies known security vulnerabilities. It uses publicly known exploits, vulnerabilities database. [Documentation](https://pyraider.raidersource.com)
 
-![version](https://img.shields.io/badge/release-1.0.18-success)
+![version](https://img.shields.io/badge/release-1.0.19-success)
 ![python version](https://img.shields.io/badge/python-3-blue)
 ![license](https://img.shields.io/badge/license-MIT-brightgreen)
 [![Downloads](https://static.pepy.tech/personalized-badge/pyraider?period=total&units=international_system&left_color=black&right_color=orange&left_text=downloads)](https://pepy.tech/project/pyraider)
@@ -166,7 +166,7 @@ docker build -t pyraider .
 ### Contact us:
 * Discord : [Click here](https://discord.gg/tBbmCJq) to join Discord, to be a part of **PyRaider** family.
 * Follow us on Twitter : https://twitter.com/tilakthimmappa
-* Email : tilakthimmappa@gmail.com
+* Email : raidersource@gmail.com
 
 ### Contribute
 * We welcome contributions to this project in the form of:
