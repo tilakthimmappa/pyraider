@@ -273,7 +273,7 @@ def scan_light_vulnerabilities():
     else:
         print(stylize('Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
         ssl._create_default_https_context = ssl._create_unverified_context
-        url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource_light.json'
+        url = 'https://pyraider-resources.s3.amazonaws.com/resource_light.json'
         try:
             urlretrieve(url, data_path, download_progress)
         except Exception as e:
@@ -295,7 +295,7 @@ def check_latestdb():
         os.remove(data_path)
     print(stylize('Downloading resources to scan the packages, It may take some time to download  .....', colored.fg("green")))
     ssl._create_default_https_context = ssl._create_unverified_context
-    url = 'https://pyraider-source-data.s3-us-west-2.amazonaws.com/resource_light.json'
+    url = 'https://pyraider-resources.s3.amazonaws.com/resource_light.json'
     try:
         urlretrieve(url, data_path, download_progress)
     except Exception as e:
